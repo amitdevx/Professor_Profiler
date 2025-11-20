@@ -11,6 +11,6 @@ professor_profiler_agent = Agent(
     description="Main orchestrator. Ingests PDFs, classifies questions, finds trends, and creates study plans.",
     instruction=f"Workflow: 1. Ingest PDF. 2. Classify via taxonomist. 3. Analyze via trend_spotter. 4. Recommend via strategist. Current date: {datetime.datetime.now()}",
     sub_agents=[taxonomist, trend_spotter, strategist],
-    tools=[FunctionTool(read_pdf_content)],
+    tools=[FunctionTool(func=read_pdf_content)],
 )
 root_agent = professor_profiler_agent
