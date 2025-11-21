@@ -1,0 +1,6 @@
+include README.md
+include requirements.txt
+include LICENSE
+recursive-include profiler_agent *.py
+recursive-include google *.py
+recursive-include tests *.py *.pdf
