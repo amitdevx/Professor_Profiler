@@ -1,0 +1,76 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Output folder (keep structure, ignore generated files)
+output/*.json
+output/*.txt
+output/charts/*.png
+output/charts/*.jpg
+output/charts/*.svg
+output/logs/*.log
+output/logs/*.txt
+output/reports/*.md
+output/reports/*.pdf
+output/reports/*.json
+
+# Input folder (ignore all PDFs - sensitive exam data)
+input/*.pdf
+input/*.PDF
+
+# Keep README files and .gitkeep files
+!input/README.md
+!output/README.md
+!output/*/.gitkeep
+
+# Environment variables
+.env
+.env.local
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

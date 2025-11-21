@@ -2,7 +2,10 @@
 import os
 import json
 from typing import Dict, List, Any
+from pathlib import Path
 from collections import Counter
+from .paths import get_input_path, get_output_path, list_input_files
+
 try:
     from pypdf import PdfReader
 except ImportError:
@@ -26,15 +29,29 @@ def read_pdf_content(file_path: str) -> dict:
     Extract text content from a PDF file.
     
     Args:
-        file_path: Path to the PDF file
+        file_path: Path to the PDF file (relative to input/ folder or absolute path)
     
     Returns:
         Dictionary with filename and content, or error message
     """
     if PdfReader is None:
         return {"error": "pypdf library is not installed."}
+    
+    # If path is relative (no directory separator), look in input/ folder
+    path = Path(file_path)
+    if not path.is_absolute() and not os.path.exists(file_path):
+        # Try looking in input directory
+        input_file = get_input_path(file_path)
+        if input_file.exists():
+            file_path = str(input_file)
+        else:
+            return {
+                "error": f"File not found: {file_path}. Please place exam PDFs in the 'input/' folder."
+            }
+    
     if not os.path.exists(file_path):
         return {"error": f"File not found: {file_path}"}
+    
     try:
         reader = PdfReader(file_path)
         text = ""
@@ -121,7 +138,7 @@ def visualize_trends(
     
     Args:
         statistics: JSON string containing statistical data
-        output_path: Path to save the chart
+        output_path: Path to save the chart (saved to output/charts/ by default)
         chart_type: Type of chart ('bar', 'pie', 'line')
     
     Returns:
@@ -131,6 +148,10 @@ def visualize_trends(
         return {"error": "matplotlib library is not installed"}
     
     try:
+        # Use output/charts directory if only filename provided
+        if not os.path.dirname(output_path):
+            output_path = str(get_output_path(output_path, "charts"))
+        
         # Parse statistics
         if isinstance(statistics, str):
             stats = json.loads(statistics)
@@ -215,3 +236,23 @@ def compare_exams(exam_files: List[str]) -> dict:
         "exams_analyzed": results,
         "message": f"Successfully compared {len(results)} exams"
     }
+
+
+def list_available_exams() -> dict:
+    """
+    List all PDF files available in the input directory.
+    
+    Returns:
+        Dictionary with list of available exam files
+    """
+    try:
+        pdf_files = list_input_files(".pdf")
+        
+        return {
+            "count": len(pdf_files),
+            "files": [f.name for f in pdf_files],
+            "paths": [str(f) for f in pdf_files],
+            "message": f"Found {len(pdf_files)} PDF file(s) in input/ directory"
+        }
+    except Exception as e:
+        return {"error": f"Failed to list files: {str(e)}"}

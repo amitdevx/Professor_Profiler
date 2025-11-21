@@ -5,12 +5,16 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 from collections import defaultdict
 import hashlib
+from .paths import get_output_path
 
 
 class MemoryBank:
     """Long-term memory storage for agent context."""
     
-    def __init__(self, storage_path: str = "memory_bank.json"):
+    def __init__(self, storage_path: Optional[str] = None):
+        if storage_path is None:
+            # Default to output directory
+            storage_path = str(get_output_path("memory_bank.json"))
         self.storage_path = storage_path
         self.memories: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
         self.load()

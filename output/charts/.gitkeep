@@ -1,0 +1,2 @@
+# Keep this file to preserve the output/charts directory in git
+# Actual chart files (.png) are gitignored

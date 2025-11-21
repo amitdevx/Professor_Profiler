@@ -8,6 +8,7 @@ from functools import wraps
 from datetime import datetime
 from collections import defaultdict
 import threading
+from .paths import get_output_path, LOGS_DIR
 
 
 # Configure structured logging
@@ -40,8 +41,15 @@ class StructuredFormatter(logging.Formatter):
         return json.dumps(log_data)
 
 
-def setup_logging(level: str = "INFO", structured: bool = False):
-    """Setup logging configuration."""
+def setup_logging(level: str = "INFO", structured: bool = False, log_file: Optional[str] = None):
+    """
+    Setup logging configuration.
+    
+    Args:
+        level: Log level (INFO, DEBUG, WARNING, ERROR)
+        structured: Use JSON structured logging
+        log_file: Optional log file name (saved to output/logs/)
+    """
     log_level = getattr(logging, level.upper(), logging.INFO)
     
     # Create logger
@@ -53,8 +61,8 @@ def setup_logging(level: str = "INFO", structured: bool = False):
         logger.removeHandler(handler)
     
     # Create console handler
-    handler = logging.StreamHandler()
-    handler.setLevel(log_level)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(log_level)
     
     # Set formatter
     if structured:
@@ -65,8 +73,17 @@ def setup_logging(level: str = "INFO", structured: bool = False):
             datefmt='%Y-%m-%d %H:%M:%S'
         )
     
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+    
+    # Add file handler if requested
+    if log_file:
+        log_path = get_output_path(log_file, "logs")
+        file_handler = logging.FileHandler(str(log_path))
+        file_handler.setLevel(log_level)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+        logger.info(f"Logging to file: {log_path}")
     
     return logger
 

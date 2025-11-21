@@ -2,6 +2,9 @@
 
 A production-ready **multi-agent system** powered by **Google Gemini API** that analyzes exam papers to identify trends, classify questions, and generate personalized study recommendations.
 
+> **🚀 New to this project?** Start here: [**GETTING_STARTED.md**](GETTING_STARTED.md)  
+> **⚡ Quick Start (5 min):** [**QUICKSTART.md**](QUICKSTART.md)
+
 ## 🌟 Key Features
 
 This project demonstrates **8+ key AI agent concepts** required for advanced agent systems:
@@ -98,11 +101,40 @@ pip install -r requirements.txt
 export GOOGLE_API_KEY="your_gemini_api_key_here"
 ```
 
-### Running the Demo
+### 📁 Folder Structure
+
+The project uses a clear input/output folder structure:
+
+```
+Professor_Profiler/
+├── input/           # 📥 Place your exam PDF files here
+├── output/          # 📤 All results are saved here
+│   ├── charts/      #    └─ Visualization charts (PNG files)
+│   ├── logs/        #    └─ Log files
+│   └── reports/     #    └─ Analysis reports
+├── profiler_agent/  # Agent source code
+├── tests/           # Test files
+└── demo.py          # Demo script
+```
+
+**Workflow:**
+1. **Place exam PDFs** in the `input/` folder
+2. **Run the agent** (demo.py or your own script)
+3. **Find results** in the `output/` folder
+
+### Running Your First Analysis
 
 ```bash
-# Run comprehensive demo showcasing all features
+# Step 1: Add your exam PDF to input folder
+cp your_exam.pdf input/
+
+# Step 2: Run the demo
 python demo.py
+
+# Step 3: Check results in output folder
+ls output/charts/     # View generated charts
+cat output/logs/demo_run.log  # View execution logs
+cat output/memory_bank.json   # View stored memories
 ```
 
 ### Running Tests
@@ -117,13 +149,14 @@ pytest tests/
 
 ## 📋 Usage Examples
 
-### Basic Usage
+### Basic Usage (with input/output folders)
 
 ```python
 import asyncio
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from profiler_agent.agent import root_agent
+from profiler_agent.paths import list_input_files
 from google.genai import types as genai_types
 
 async def analyze_exam():
@@ -142,7 +175,11 @@ async def analyze_exam():
         session_service=session_service
     )
     
-    # Run analysis
+    # List available exams in input/ folder
+    exams = list_input_files()
+    print(f"Found {len(exams)} exam(s): {[e.name for e in exams]}")
+    
+    # Run analysis (agent will look for PDF in input/ folder)
     query = "Analyze physics_2024.pdf and tell me what to study"
     
     async for event in runner.run_async(
@@ -155,11 +192,12 @@ async def analyze_exam():
     ):
         if event.is_final_response():
             print(event.content.parts[0].text)
+            # Results automatically saved to output/ folder
 
 asyncio.run(analyze_exam())
 ```
 
-### Using Memory Bank
+### Using Memory Bank (saves to output/ folder)
 
 ```python
 from profiler_agent.memory import MemoryBank

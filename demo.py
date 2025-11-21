@@ -9,8 +9,14 @@ This demo showcases:
 5. Gemini API integration
 
 Usage:
+    # Place your exam PDFs in the input/ folder
     export GOOGLE_API_KEY=your_api_key_here
     python demo.py
+    
+    # Results will be saved to output/ folder:
+    # - output/charts/ - Visualization charts
+    # - output/logs/ - Log files
+    # - output/reports/ - Analysis reports
 """
 
 import asyncio
@@ -29,6 +35,7 @@ from google.adk.sessions import InMemorySessionService
 from profiler_agent.agent import root_agent
 from profiler_agent.observability import setup_logging, metrics, tracer, log_agent_event
 from profiler_agent.memory import MemoryBank
+from profiler_agent.paths import get_input_path, get_output_path, list_input_files, ensure_directories
 from google.genai import types as genai_types
 
 
@@ -38,8 +45,11 @@ async def demo_basic_workflow():
     print("DEMO 1: Basic Agent Workflow")
     print("="*80)
     
-    # Setup logging with structured output
-    logger = setup_logging(level="INFO", structured=False)
+    # Ensure directories exist
+    ensure_directories()
+    
+    # Setup logging with file output
+    logger = setup_logging(level="INFO", structured=False, log_file="demo_run.log")
     
     # Initialize session service
     session_service = InMemorySessionService()
@@ -56,16 +66,15 @@ async def demo_basic_workflow():
         session_service=session_service
     )
     
-    # Create sample PDF if doesn't exist
-    os.makedirs("tests/sample_data", exist_ok=True)
-    sample_pdf = "tests/sample_data/physics_2024.pdf"
-    if not os.path.exists(sample_pdf):
+    # Create sample PDF in input folder if doesn't exist
+    sample_pdf = get_input_path("physics_2024.pdf")
+    if not sample_pdf.exists():
         print(f"\n⚠️  Creating mock PDF at {sample_pdf}")
         with open(sample_pdf, "w") as f:
             f.write("Mock PDF content for testing")
     
-    # Run agent with query
-    query = f"Analyze the exam paper at {sample_pdf} and tell me what topics to focus on."
+    # Run agent with query (use just the filename, tool will look in input/)
+    query = "Analyze the exam paper physics_2024.pdf and tell me what topics to focus on."
     print(f"\n📝 Query: {query}")
     print("\n🤖 Agent Response:")
     print("-" * 80)
@@ -96,7 +105,8 @@ async def demo_memory_bank():
     print("DEMO 2: Memory Bank & Long-term Context")
     print("="*80)
     
-    memory_bank = MemoryBank(storage_path="demo_memory.json")
+    # Memory bank will automatically save to output/memory_bank.json
+    memory_bank = MemoryBank()
     user_id = "demo_user"
     
     # Add memories
@@ -216,22 +226,29 @@ async def demo_tools():
     from profiler_agent.tools import (
         read_pdf_content,
         analyze_statistics,
-        visualize_trends
+        visualize_trends,
+        list_available_exams
     )
     
-    # Create mock PDF
-    os.makedirs("tests/sample_data", exist_ok=True)
-    test_pdf = "tests/sample_data/demo_exam.pdf"
+    # List available exams
+    print(f"\n📂 Listing available exams in input/ folder...")
+    available = list_available_exams()
+    if available.get("count", 0) > 0:
+        print(f"  ✅ Found {available['count']} exam(s):")
+        for filename in available.get("files", []):
+            print(f"     - {filename}")
+    else:
+        print(f"  ⚠️  No exams found in input/ folder")
     
-    print(f"\n📄 Testing read_pdf_content tool...")
-    result = read_pdf_content(test_pdf)
-    if "error" in result:
-        print(f"  ⚠️  {result['error']}")
-        # Create a mock file for demo
+    # Create mock PDF in input folder
+    test_pdf = get_input_path("demo_exam.pdf")
+    if not test_pdf.exists():
+        print(f"\n📄 Creating mock PDF at {test_pdf}...")
         with open(test_pdf, "w") as f:
             f.write("Mock exam content")
-        result = read_pdf_content(test_pdf)
     
+    print(f"\n📄 Testing read_pdf_content tool...")
+    result = read_pdf_content("demo_exam.pdf")  # Just use filename
     print(f"  ✅ Extracted content from: {result.get('filename', 'unknown')}")
     
     # Test statistics tool
@@ -249,9 +266,9 @@ async def demo_tools():
     stats = analyze_statistics(json.dumps(mock_questions))
     print(f"  ✅ Statistics:\n{json.dumps(stats, indent=4)}")
     
-    # Test visualization tool
+    # Test visualization tool (output will go to output/charts/)
     print(f"\n📈 Testing visualize_trends tool...")
-    chart_path = "tests/sample_data/demo_chart.png"
+    chart_path = "demo_chart.png"  # Will be saved to output/charts/
     viz_result = visualize_trends(json.dumps(stats), chart_path)
     
     if viz_result.get("success"):
@@ -305,6 +322,26 @@ async def main():
     print("  ✅ Observability (Logging, Tracing, Metrics)")
     print("  ✅ Gemini API integration (if API key provided)")
     
+    # Show folder structure
+    print("\n📁 Project Structure:")
+    print("  📂 input/  - Place your exam PDFs here")
+    print("  📂 output/ - All results saved here")
+    print("     ├── charts/  - Visualization charts")
+    print("     ├── logs/    - Log files")
+    print("     └── reports/ - Analysis reports")
+    
+    # Ensure directories exist
+    ensure_directories()
+    
+    # Check for input files
+    input_files = list_input_files()
+    print(f"\n📄 Found {len(input_files)} PDF file(s) in input/ folder")
+    if input_files:
+        for f in input_files[:3]:  # Show first 3
+            print(f"   - {f.name}")
+        if len(input_files) > 3:
+            print(f"   ... and {len(input_files) - 3} more")
+    
     # Check for API key
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
@@ -324,6 +361,10 @@ async def main():
         print("\n" + "="*80)
         print("✅ ALL DEMOS COMPLETED SUCCESSFULLY!")
         print("="*80)
+        print(f"\n📊 Check the output/ folder for:")
+        print(f"   - Charts: output/charts/")
+        print(f"   - Logs: output/logs/demo_run.log")
+        print(f"   - Memory: output/memory_bank.json")
         
     except KeyboardInterrupt:
         print("\n\n⚠️  Demo interrupted by user")
