@@ -1,4 +1,4 @@
-# Professor Profiler 🎓
+# Professor Profiler 
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-2.5%20Pro-8E44AD?style=flat&logo=google&logoColor=white)](https://ai.google.dev/)
@@ -11,7 +11,7 @@
 
 ---
 
-## 📖 Overview
+## Overview
 
 **Professor Profiler** is not just a document reader; it is a **Hierarchical Multi-Agent System (HMAS)** designed to mimic the cognitive process of an expert tutor. By orchestrating specialized AI agents powered by **Google Gemini 2.5**, it ingests raw exam PDFs, breaks them down into cognitive components (Bloom's Taxonomy), identifies statistical patterns, and formulates actionable "Safe Zone" and "Hit List" study plans.
 
@@ -23,7 +23,7 @@ This project serves as a reference implementation for:
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 The system creates a directed acyclic graph (DAG) of agent execution, managed by a central orchestrator.
 
@@ -31,18 +31,18 @@ The system creates a directed acyclic graph (DAG) of agent execution, managed by
 
 ```mermaid
 flowchart TD
-    subgraph External_Layer ["🔌 External Layer"]
+    subgraph External_Layer [" External Layer"]
         User([User / Client])
         PDF_File[Exam PDF]
     end
 
-    subgraph Orchestration_Layer ["🧠 Orchestration Layer"]
+    subgraph Orchestration_Layer [" Orchestration Layer"]
         Runner[<b>Runner</b><br><i>State Management</i>]
         Memory[(<b>Memory Bank</b><br><i>JSON Persistence</i>)]
         Session[<b>Session Service</b>]
     end
 
-    subgraph Agent_Layer ["🤖 Agent Hierarchy"]
+    subgraph Agent_Layer [" Agent Hierarchy"]
         Root[<b>ROOT AGENT</b><br><i>Gemini 2.5 Pro</i><br>The Project Manager]
         
         subgraph Workers ["Specialized Sub-Agents"]
@@ -52,7 +52,7 @@ flowchart TD
         end
     end
 
-    subgraph Tool_Layer ["🛠️ Tool Layer"]
+    subgraph Tool_Layer [" Tool Layer"]
         Reader[PDF Ingestion]
         Plotter[Matplotlib Viz]
         Calc[Stats Engine]
@@ -81,10 +81,10 @@ The following sequence illustrates how a raw PDF is transformed into a study pla
 sequenceDiagram
     autonumber
     actor Student
-    participant Root as 🧠 Root Agent
-    participant Tool as 🛠️ Tools
-    participant Tax as 🏷️ Taxonomist
-    participant Strat as 🎯 Strategist
+    participant Root as Root Agent
+    participant Tool as Tools
+    participant Tax as Taxonomist
+    participant Strat as Strategist
 
     Student->>Root: "Analyze Physics_2024.pdf"
     
@@ -119,7 +119,7 @@ sequenceDiagram
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Component | Technology | Description |
 | :--- | :--- | :--- |
@@ -133,7 +133,7 @@ sequenceDiagram
 
 ---
 
-## 🤖 Agent Personas
+## Agent Personas
 
 The system is composed of three distinct "personalities" to ensure high-quality output:
 
@@ -154,9 +154,9 @@ The system is composed of three distinct "personalities" to ensure high-quality 
 ### 3. The Strategist (Coach)
 *   **Model:** `gemini-2.0-flash-thinking-exp-01-21` (Reasoning enabled)
 *   **Role:** The academic coach. It takes the analysis and outputs:
-    *   **✅ Safe Zone:** Topics you must master (High reward, Low effort).
-    *   **⚠️ Danger Zone:** Topics that are high difficulty and appear frequently.
-    *   **🗑️ Drop List:** Low-value topics you can safely skip if short on time.
+    *   ** Safe Zone:** Topics you must master (High reward, Low effort).
+    *   ** Danger Zone:** Topics that are high difficulty and appear frequently.
+    *   ** Drop List:** Low-value topics you can safely skip if short on time.
 
 ---
 ### Inter-Agent Communication Flow
@@ -197,7 +197,7 @@ graph TD
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 1.  **Python 3.10** or higher installed.
@@ -235,7 +235,7 @@ export GOOGLE_API_KEY="AIzaSy..."
 
 ---
 
-## 💻 Usage
+## Usage
 
 ### 1. The Input/Output Workflow
 The system relies on a file-system interface for processing documents.
@@ -272,14 +272,14 @@ async def main():
     user_msg = "Analyze the chemistry_midterm.pdf file in the input folder."
     
     # Execute
-    print("🤖 Agent is thinking...")
+    print("Agent is thinking...")
     async for event in runner.run_async(
         user_id="prof_user",
         session_id="sess_01",
         new_message=types.Content(role="user", parts=[types.Part.from_text(user_msg)])
     ):
         if event.is_final_response():
-            print(f"\n🎓 Final Answer:\n{event.content.parts[0].text}")
+            print(f"\n Final Answer:\n{event.content.parts[0].text}")
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -287,30 +287,30 @@ if __name__ == "__main__":
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 Professor_Profiler/
-├── input/                     # 📥 Place PDFs here for analysis
-├── output/                    # 📤 Generated artifacts
-│   ├── charts/                #    - Topic distribution graphs
-│   ├── logs/                  #    - Structured JSON logs
-│   └── reports/               #    - Markdown study guides
-├── google/adk/                # 🧱 ADK Framework Core
-│   ├── agents/                #    - Base Agent classes
-│   ├── runners/               #    - Execution logic
-│   └── tools/                 #    - Tool wrapping logic
-├── profiler_agent/            # 🧠 Application Logic
-│   ├── sub_agents/            #    - Taxonomist, Trend, Strategist
-│   ├── tools.py               #    - PDF & Math tools
-│   ├── config.py              #    - Model & Env settings
-│   └── observability.py       #    - Tracing implementation
-└── tests/                     # 🧪 Pytest suite
+├── input/
+├── output/
+│   ├── charts/
+│   ├── logs/
+│   └── reports/
+├── google/adk/
+│   ├── agents/
+│   ├── runners/
+│   └── tools/
+├── profiler_agent/
+│   ├── sub_agents/
+│   ├── tools.py
+│   ├── config.py
+│   └── observability.py
+└── tests/
 ```
 
 ---
 
-## ❓ Troubleshooting
+## Troubleshooting
 
 | Issue | Cause | Solution |
 | :--- | :--- | :--- |
@@ -321,10 +321,12 @@ Professor_Profiler/
 
 ---
 
-## 📜 License
+## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ---
 
-**Maintained by [uffamit](https://github.com/uffamit)** 
+**Maintained by [uffamit](https://github.com/uffamit)**  
+Website: https://amitdevx.tech
+
