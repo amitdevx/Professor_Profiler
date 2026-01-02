@@ -1,4 +1,11 @@
-"""Agent implementation with Gemini API integration."""
+"""Agent abstraction with Gemini API integration.
+
+This module defines a reusable Agent class that:
+- Executes LLM calls via Gemini
+- Supports tool/function calling
+- Allows hierarchical composition via sub-agents
+- Provides lifecycle hooks for post-processing
+"""
 import asyncio
 import json
 from typing import List, Dict, Any, Optional, Callable
@@ -6,7 +13,14 @@ from google.genai import types as genai_types
 
 
 class Agent:
-    """Agent powered by LLM with support for tools and sub-agents."""
+    """LLM-powered agent with tool support and optional sub-agent orchestration.
+
+    An Agent represents a single reasoning/execution unit that can:
+    - Call a Gemini model
+    - Invoke registered tools/functions
+    - Delegate work to sub-agents
+    - Post-process results via callbacks
+    """
     
     def __init__(
         self,
@@ -20,25 +34,39 @@ class Agent:
         after_agent_callback: Optional[Callable] = None,
         **kwargs
     ):
+        # Agent identity and model configuration
         self.name = name
         self.model = model
+        
+        # High-level role and behavioral instructions
         self.description = description
         self.instruction = instruction
+        
+        # Execution extensions
         self.tools = tools or []
         self.sub_agents = sub_agents or []
+        
+        # Output routing / post-processing metadata
         self.output_key = output_key
         self.after_agent_callback = after_agent_callback
+        
+        # Model generation parameters (temperature, top_p, etc.)
         self.kwargs = kwargs
         
-        # State
+        # Runtime state (initialized later)
         self.client = None
         self.context = {}
         
     def __repr__(self):
+        """Readable representation for debugging and logs."""
         return f"Agent(name='{self.name}', model='{self.model}')"
     
     async def initialize(self, client):
-        """Initialize agent with Gemini client."""
+        """Attach a Gemini client to this agent and all sub-agents.
+
+        This method must be called before `run()` to ensure
+        the agent has access to the LLM backend.
+        """
         self.client = client
         for sub_agent in self.sub_agents:
             await sub_agent.initialize(client)
@@ -49,30 +77,43 @@ class Agent:
         context: Optional[Dict[str, Any]] = None,
         **kwargs
     ) -> Dict[str, Any]:
-        """Execute agent with given prompt and context."""
+        """Execute the agent on a given prompt and optional shared context.
+
+        Handles:
+        - Prompt and system instruction construction
+        - Tool configuration
+        - LLM execution
+        - Sub-agent delegation
+        - Post-execution callbacks
+        """
         if not self.client:
             raise RuntimeError(f"Agent {self.name} not initialized with client")
         
+        # Store execution-scoped context
         self.context = context or {}
         
-        # Build system instruction
+        # Construct system-level instructions (role, constraints, metadata)
         system_instruction = self._build_system_instruction()
         
-        # Build prompt with context
+        # Combine user prompt with structured context
         full_prompt = self._build_full_prompt(prompt)
         
-        # Prepare tool declarations for Gemini
+        # Prepare Gemini-compatible tool declarations
         tool_config = self._prepare_tool_config()
         
-        # Execute LLM call
         try:
-            response = await self._execute_llm(full_prompt, system_instruction, tool_config)
+            # Execute the primary LLM call
+            response = await self._execute_llm(
+                full_prompt,
+                system_instruction,
+                tool_config
+            )
             
-            # Execute sub-agents if any
+            # Sequentially run sub-agents on the parent response
             if self.sub_agents:
                 response = await self._execute_sub_agents(response)
             
-            # Apply callback if defined
+            # Optional post-processing hook
             if self.after_agent_callback:
                 from .callback_context import CallbackContext
                 ctx = CallbackContext(agent=self, response=response)
@@ -80,6 +121,7 @@ class Agent:
                 if callback_result:
                     response = callback_result
             
+            # Standardized agent output envelope
             return {
                 "agent": self.name,
                 "response": response,
@@ -87,6 +129,7 @@ class Agent:
             }
             
         except Exception as e:
+            # Fail safely without crashing the agent runtime
             return {
                 "agent": self.name,
                 "error": str(e),
@@ -94,7 +137,14 @@ class Agent:
             }
     
     def _build_system_instruction(self) -> str:
-        """Build system instruction including agent role."""
+        """Assemble the system instruction passed to the LLM.
+
+        Includes:
+        - Agent role description
+        - Behavioral instructions
+        - Available tools
+        - Sub-agent awareness
+        """
         parts = []
         
         if self.description:
@@ -114,13 +164,16 @@ class Agent:
         return "\n\n".join(parts)
     
     def _build_full_prompt(self, prompt: str) -> str:
-        """Build prompt with context."""
+        """Merge the user prompt with structured execution context.
+
+        Context is serialized in a readable, model-friendly format.
+        """
         if not self.context:
             return prompt
         
         context_str = "\n\nContext:\n"
         for key, value in self.context.items():
-            if isinstance(value, dict) or isinstance(value, list):
+            if isinstance(value, (dict, list)):
                 context_str += f"- {key}: {json.dumps(value, indent=2)}\n"
             else:
                 context_str += f"- {key}: {value}\n"
@@ -128,11 +181,13 @@ class Agent:
         return prompt + context_str
     
     def _prepare_tool_config(self) -> Optional[Dict[str, Any]]:
-        """Prepare tool configuration for Gemini."""
+        """Convert registered tools into Gemini function declarations.
+
+        Returns None if no valid tools are available.
+        """
         if not self.tools:
             return None
         
-        # Convert tools to Gemini function declarations
         tool_declarations = []
         for tool in self.tools:
             if hasattr(tool, 'to_gemini_declaration'):
@@ -151,10 +206,16 @@ class Agent:
         system_instruction: str,
         tool_config: Optional[Dict[str, Any]]
     ) -> str:
-        """Execute LLM with prompt and tools."""
+        """Execute a Gemini model call with optional tool support.
+
+        Handles:
+        - Generation configuration
+        - Tool-aware requests
+        - Tool call detection and execution
+        """
         from google import genai
         
-        # Build generation config
+        # Model generation parameters
         config = {
             "temperature": self.kwargs.get("temperature", 0.7),
             "top_p": self.kwargs.get("top_p", 0.95),
@@ -162,7 +223,7 @@ class Agent:
             "max_output_tokens": self.kwargs.get("max_output_tokens", 2048),
         }
         
-        # Create contents
+        # User content payload
         contents = [
             genai_types.Content(
                 role="user",
@@ -170,7 +231,7 @@ class Agent:
             )
         ]
         
-        # Add system instruction and tools if available
+        # Request configuration
         generate_kwargs = {
             "model": self.model,
             "contents": contents,
@@ -183,32 +244,32 @@ class Agent:
         if tool_config:
             generate_kwargs["config"].tools = [tool_config]
         
-        # Generate response
+        # Invoke Gemini
         response = await self.client.aio.models.generate_content(**generate_kwargs)
         
-        # Handle tool calls if present
+        # Inspect model output for tool calls or text responses
         if hasattr(response, 'candidates') and response.candidates:
             candidate = response.candidates[0]
             if hasattr(candidate, 'content') and candidate.content.parts:
-                # Check for function calls
                 for part in candidate.content.parts:
                     if hasattr(part, 'function_call') and part.function_call:
-                        # Execute tool and continue
-                        tool_result = await self._execute_tool_call(part.function_call)
-                        # In production, you'd send tool result back to model
-                        return tool_result
+                        # Execute the requested tool
+                        return await self._execute_tool_call(part.function_call)
                 
-                # Return text response
+                # Default to returning textual output
                 return candidate.content.parts[0].text
         
         return str(response.text) if hasattr(response, 'text') else ""
     
     async def _execute_tool_call(self, function_call) -> str:
-        """Execute a tool/function call."""
+        """Execute a tool invoked by the LLM.
+
+        Matches the function name to a registered tool and
+        returns the serialized result.
+        """
         function_name = function_call.name
         args = dict(function_call.args) if hasattr(function_call, 'args') else {}
         
-        # Find matching tool
         for tool in self.tools:
             if hasattr(tool, 'name') and tool.name == function_name:
                 if hasattr(tool, 'execute'):
@@ -221,7 +282,11 @@ class Agent:
         return json.dumps({"error": f"Tool {function_name} not found"})
     
     async def _execute_sub_agents(self, parent_response: str) -> str:
-        """Execute sub-agents in sequence."""
+        """Run sub-agents sequentially using the parent agent's response.
+
+        Each sub-agent receives the same context and the
+        previous agent’s output as its prompt.
+        """
         results = [f"[{self.name} Initial Response]\n{parent_response}"]
         
         for sub_agent in self.sub_agents:
