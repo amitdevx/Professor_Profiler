@@ -15,7 +15,7 @@ os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
 
 @dataclass
 class ProfilerConfiguration:
-    classifier_model: str = "gemini-2.5-flash"
-    analyzer_model: str = "gemini-2.5-pro"
+    classifier_model: str = "gemini-3-flash"
+    analyzer_model: str = "gemini-3-pro"
 
 config = ProfilerConfiguration()
