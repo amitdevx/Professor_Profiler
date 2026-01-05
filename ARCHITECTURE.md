@@ -56,7 +56,7 @@ User Query → Runner → Root Agent (professor_profiler_agent)
 ```
 
 ## Technology Stack
-- **LLM**: Google Gemini 2.5 (Flash for classification, Pro for analysis)
+- **LLM**: Google Gemini 3 (Flash for classification, Pro for analysis)
 - **Framework**: Custom ADK (Agent Development Kit)
 - **PDF Processing**: pypdf
 - **Visualization**: matplotlib
@@ -67,25 +67,25 @@ User Query → Runner → Root Agent (professor_profiler_agent)
 ## Agent Specifications
 
 ### Root Agent: professor_profiler_agent
-- **Model**: gemini-2.5-pro
+- **Model**: gemini-3-pro
 - **Role**: Orchestrator
 - **Tools**: read_pdf_content, visualize_trends, analyze_statistics
 - **Sub-agents**: taxonomist, trend_spotter, strategist
 
 ### Sub-Agent: taxonomist
-- **Model**: gemini-2.5-flash (cost-effective for classification)
+- **Model**: gemini-3-flash (cost-effective for classification)
 - **Role**: Question classification
 - **Output**: Tagged questions with topics and Bloom's levels
 - **Callback**: Suppresses intermediate output
 
 ### Sub-Agent: trend_spotter
-- **Model**: gemini-2.5-pro (complex analysis)
+- **Model**: gemini-3-pro (complex analysis)
 - **Role**: Statistical trend analysis
 - **Output**: Shift report with frequency and cognitive trends
 - **Callback**: Suppresses intermediate output
 
 ### Sub-Agent: strategist
-- **Model**: gemini-2.5-pro
+- **Model**: gemini-3-pro
 - **Role**: Study plan generation
 - **Output**: Hit List, Safe Zone, Drop List recommendations
 
