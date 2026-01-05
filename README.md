@@ -1,7 +1,7 @@
 # Professor Profiler 
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue?style=flat&logo=python&logoColor=white)](https://www.python.org/)
-[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-3%20Pro-8E44AD?style=flat&logo=google&logoColor=white)](https://ai.google.dev/)
+[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-2.0%20Pro-8E44AD?style=flat&logo=google&logoColor=white)](https://ai.google.dev/)
 [![Architecture](https://img.shields.io/badge/Architecture-Hub%20%26%20Spoke-orange?style=flat)](https://github.com/uffamit/Professor_Profiler)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 [![Quality Assurance Pipeline](https://github.com/uffamit/Professor_Profiler/actions/workflows/quality-assurance.yml/badge.svg)](https://github.com/uffamit/Professor_Profiler/actions/workflows/quality-assurance.yml)
@@ -13,7 +13,7 @@
 
 ## Overview
 
-**Professor Profiler** is not just a document reader; it is a **Hierarchical Multi-Agent System (HMAS)** designed to mimic the cognitive process of an expert tutor. By orchestrating specialized AI agents powered by **Google Gemini 3**, it ingests raw exam PDFs, breaks them down into cognitive components (Bloom's Taxonomy), identifies statistical patterns, and formulates actionable "Safe Zone" and "Hit List" study plans.
+**Professor Profiler** is not just a document reader; it is a **Hierarchical Multi-Agent System (HMAS)** designed to mimic the cognitive process of an expert tutor. By orchestrating specialized AI agents powered by **Google Gemini 2.0**, it ingests raw exam PDFs, breaks them down into cognitive components (Bloom's Taxonomy), identifies statistical patterns, and formulates actionable "Safe Zone" and "Hit List" study plans.
 
 This project serves as a reference implementation for:
 *   **Hub-and-Spoke Agent Architecture**
@@ -43,7 +43,7 @@ flowchart TD
     end
 
     subgraph Agent_Layer [" Agent Hierarchy"]
-        Root[<b>ROOT AGENT</b><br><i>Gemini 3 Pro</i><br>The Project Manager]
+        Root[<b>ROOT AGENT</b><br><i>Gemini 2.0 Pro</i><br>The Project Manager]
         
         subgraph Workers ["Specialized Sub-Agents"]
             Taxonomist[<b>Taxonomist</b><br><i>Gemini Flash</i><br>Topic & Bloom's Classification]
@@ -124,7 +124,7 @@ sequenceDiagram
 | Component | Technology | Description |
 | :--- | :--- | :--- |
 | **Core Logic** | Python 3.10+ | Type-hinted, async-native codebase. |
-| **LLM Engine** | Google Gemini 3 | Uses `Pro` for reasoning and `Flash` for high-speed tasks. |
+| **LLM Engine** | Google Gemini 2.0 | Uses `Pro` for reasoning and `Flash` for high-speed tasks. |
 | **Orchestrator** | Google ADK (Custom) | Custom implementation of the Agent Development Kit patterns. |
 | **Document Processing** | `pypdf` | Robust text extraction from standardized exam papers. |
 | **Visualization** | `matplotlib` | Generates distribution bar charts and pie charts on the fly. |
