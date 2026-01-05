@@ -5,7 +5,7 @@
 ### 1. Multi-Agent System ✓
 - [x] **Hub-and-Spoke Architecture**: Root orchestrator (`professor_profiler_agent`) + 3 specialized sub-agents
 - [x] **Sequential Agents**: Taxonomist → Trend Spotter → Strategist workflow
-- [x] **Agent Powered by LLM**: All agents use Google Gemini 3 (Flash/Pro)
+- [x] **Agent Powered by LLM**: All agents use Google Gemini 2.0 (Flash/Pro)
 - [x] **Parallel Processing Ready**: Batch question classification infrastructure
 - [x] **Agent Delegation**: Root agent delegates specialized tasks
 
@@ -98,7 +98,7 @@
 - **Test Coverage**: 5 comprehensive tests
 - **Agent Count**: 4 (1 root + 3 sub-agents)
 - **Custom Tools**: 4
-- **API Integration**: Google Gemini 3
+- **API Integration**: Google Gemini 2.0
 - **Architecture Pattern**: Hub-and-Spoke
 
 ## 🎯 Features Demonstrated
@@ -156,7 +156,7 @@ python demo.py
 2. **Tool Integration**: Custom tools with Gemini function calling
 3. **State Management**: Sessions and long-term memory
 4. **Production Patterns**: Logging, tracing, metrics, error handling
-5. **API Integration**: Google Gemini 3 with streaming responses
+5. **API Integration**: Google Gemini 2.0 with streaming responses
 6. **Testing**: Integration tests and comprehensive validation
 7. **Documentation**: Clear architecture and usage documentation
 
