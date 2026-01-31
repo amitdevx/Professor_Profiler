@@ -5,7 +5,7 @@ from google.genai.types import Content
 
 class CallbackContext:
     """Context passed to after_agent_callback functions."""
-    
+
     def __init__(
         self,
         agent: Any,
@@ -15,11 +15,11 @@ class CallbackContext:
         self.agent = agent
         self.response = response
         self.metadata = metadata or {}
-    
+
     def get_response_text(self) -> str:
         """Get response as text."""
         return str(self.response)
-    
+
     def to_content(self) -> Content:
         """Convert response to Content object."""
         return Content(

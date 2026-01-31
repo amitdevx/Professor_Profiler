@@ -12,7 +12,7 @@ Usage:
     # Place your exam PDFs in the input/ folder
     export GOOGLE_API_KEY=your_api_key_here
     python demo.py
-    
+
     # Results will be saved to output/ folder:
     # - output/charts/ - Visualization charts
     # - output/logs/ - Log files
@@ -44,13 +44,13 @@ async def demo_basic_workflow():
     print("\n" + "="*80)
     print("DEMO 1: Basic Agent Workflow")
     print("="*80)
-    
+
     # Ensure directories exist
     ensure_directories()
-    
+
     # Setup logging with file output
     logger = setup_logging(level="INFO", structured=False, log_file="demo_run.log")
-    
+
     # Initialize session service
     session_service = InMemorySessionService()
     await session_service.create_session(
@@ -58,29 +58,29 @@ async def demo_basic_workflow():
         user_id="demo_user",
         session_id="demo_session_1"
     )
-    
+
     # Initialize runner
     runner = Runner(
         agent=root_agent,
         app_name="professor_profiler",
         session_service=session_service
     )
-    
+
     # Create sample PDF in input folder if doesn't exist
     sample_pdf = get_input_path("physics_2024.pdf")
     if not sample_pdf.exists():
         print(f"\n⚠️  Creating mock PDF at {sample_pdf}")
         with open(sample_pdf, "w") as f:
             f.write("Mock PDF content for testing")
-    
+
     # Run agent with query (use just the filename, tool will look in input/)
     query = "Analyze the exam paper physics_2024.pdf and tell me what topics to focus on."
     print(f"\n📝 Query: {query}")
     print("\n🤖 Agent Response:")
     print("-" * 80)
-    
+
     log_agent_event(logger, "query_start", "professor_profiler_agent", query=query)
-    
+
     async for event in runner.run_async(
         user_id="demo_user",
         session_id="demo_session_1",
@@ -93,7 +93,7 @@ async def demo_basic_workflow():
             response_text = event.content.parts[0].text
             print(f"\n{response_text}")
             log_agent_event(logger, "query_complete", "professor_profiler_agent")
-    
+
     # Show session stats
     stats = session_service.get_stats()
     print(f"\n📊 Session Stats: {json.dumps(stats, indent=2)}")

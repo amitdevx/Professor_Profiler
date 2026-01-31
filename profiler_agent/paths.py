@@ -27,10 +27,10 @@ def ensure_directories():
 def get_input_path(filename: str) -> Path:
     """
     Get full path for an input file.
-    
+
     Args:
         filename: Name of the input file
-    
+
     Returns:
         Path object for the input file
     """
@@ -41,39 +41,39 @@ def get_input_path(filename: str) -> Path:
 def get_output_path(filename: str, subfolder: str = "") -> Path:
     """
     Get full path for an output file.
-    
+
     Args:
         filename: Name of the output file
         subfolder: Optional subfolder (charts, logs, reports)
-    
+
     Returns:
         Path object for the output file
     """
     ensure_directories()
-    
+
     if subfolder:
         base_dir = OUTPUT_DIR / subfolder
         base_dir.mkdir(parents=True, exist_ok=True)
         return base_dir / filename
-    
+
     return OUTPUT_DIR / filename
 
 
 def list_input_files(extension: str = ".pdf") -> list:
     """
     List all files in the input directory with given extension.
-    
+
     Args:
         extension: File extension to filter (default: .pdf)
-    
+
     Returns:
         List of Path objects for matching files
     """
     ensure_directories()
-    
+
     if not extension.startswith("."):
         extension = f".{extension}"
-    
+
     return list(INPUT_DIR.glob(f"*{extension}"))
 
 

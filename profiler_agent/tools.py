@@ -18,25 +18,20 @@ try:
 except ImportError:
     plt = None
 
-try:
-    import pandas as pd  # noqa: F401 - imported for optional functionality
-except ImportError:
-    pd = None
-
 
 def read_pdf_content(file_path: str) -> dict:
     """
     Extract text content from a PDF file.
-    
+
     Args:
         file_path: Path to the PDF file (relative to input/ folder or absolute path)
-    
+
     Returns:
         Dictionary with filename and content, or error message
     """
     if PdfReader is None:
         return {"error": "pypdf library is not installed."}
-    
+
     # If path is relative (no directory separator), look in input/ folder
     path = Path(file_path)
     if not path.is_absolute() and not os.path.exists(file_path):
@@ -48,19 +43,19 @@ def read_pdf_content(file_path: str) -> dict:
             return {
                 "error": f"File not found: {file_path}. Please place exam PDFs in the 'input/' folder."
             }
-    
+
     if not os.path.exists(file_path):
         return {"error": f"File not found: {file_path}"}
-    
+
     try:
         reader = PdfReader(file_path)
         text = ""
         page_count = len(reader.pages)
-        
+
         for page_num, page in enumerate(reader.pages, 1):
             page_text = page.extract_text()
             text += f"\n--- Page {page_num} ---\n{page_text}"
-        
+
         return {
             "filename": os.path.basename(file_path),
             "content": text,
@@ -74,10 +69,10 @@ def read_pdf_content(file_path: str) -> dict:
 def analyze_statistics(questions_data: str) -> dict:
     """
     Analyze statistical patterns in exam questions.
-    
+
     Args:
         questions_data: JSON string or dict containing tagged questions
-    
+
     Returns:
         Statistical analysis including frequency distributions
     """
@@ -87,27 +82,27 @@ def analyze_statistics(questions_data: str) -> dict:
             data = json.loads(questions_data)
         else:
             data = questions_data
-        
+
         # Extract topics and bloom levels
         topics = []
         bloom_levels = []
-        
+
         if isinstance(data, dict):
             questions = data.get("questions", [])
         elif isinstance(data, list):
             questions = data
         else:
             return {"error": "Invalid input format"}
-        
+
         for q in questions:
             if isinstance(q, dict):
                 topics.append(q.get("topic", "Unknown"))
                 bloom_levels.append(q.get("bloom_level", "Unknown"))
-        
+
         # Calculate statistics
         topic_freq = Counter(topics)
         bloom_freq = Counter(bloom_levels)
-        
+
         return {
             "total_questions": len(questions),
             "topic_distribution": dict(topic_freq),
@@ -135,37 +130,37 @@ def visualize_trends(
 ) -> dict:
     """
     Create visualizations for exam trends.
-    
+
     Args:
         statistics: JSON string containing statistical data
         output_path: Path to save the chart (saved to output/charts/ by default)
         chart_type: Type of chart ('bar', 'pie', 'line')
-    
+
     Returns:
         Dictionary with chart path and metadata
     """
     if plt is None:
         return {"error": "matplotlib library is not installed"}
-    
+
     try:
         # Use output/charts directory if only filename provided
         if not os.path.dirname(output_path):
             output_path = str(get_output_path(output_path, "charts"))
-        
+
         # Parse statistics
         if isinstance(statistics, str):
             stats = json.loads(statistics)
         else:
             stats = statistics
-        
+
         # Create figure with subplots
         fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-        
+
         # Plot 1: Topic Distribution
         if "topic_distribution" in stats:
             topics = list(stats["topic_distribution"].keys())
             counts = list(stats["topic_distribution"].values())
-            
+
             if chart_type == "bar":
                 axes[0].bar(topics, counts, color='skyblue')
                 axes[0].set_xlabel('Topics')
@@ -175,34 +170,34 @@ def visualize_trends(
             elif chart_type == "pie":
                 axes[0].pie(counts, labels=topics, autopct='%1.1f%%')
                 axes[0].set_title('Topic Distribution')
-        
+
         # Plot 2: Bloom's Taxonomy Distribution
         if "bloom_distribution" in stats:
             blooms = list(stats["bloom_distribution"].keys())
             bloom_counts = list(stats["bloom_distribution"].values())
-            
+
             axes[1].bar(blooms, bloom_counts, color='lightcoral')
             axes[1].set_xlabel('Bloom\'s Level')
             axes[1].set_ylabel('Frequency')
             axes[1].set_title('Cognitive Complexity Distribution')
             axes[1].tick_params(axis='x', rotation=45)
-        
+
         plt.tight_layout()
-        
+
         # Ensure output directory exists
         os.makedirs(os.path.dirname(output_path) if os.path.dirname(output_path) else ".", exist_ok=True)
-        
+
         # Save figure
         plt.savefig(output_path, dpi=150, bbox_inches='tight')
         plt.close()
-        
+
         return {
             "chart_path": output_path,
             "chart_type": chart_type,
             "success": True,
             "message": f"Chart saved to {output_path}"
         }
-        
+
     except Exception as e:
         return {"error": f"Failed to create visualization: {str(e)}"}
 
@@ -210,18 +205,18 @@ def visualize_trends(
 def compare_exams(exam_files: List[str]) -> dict:
     """
     Compare multiple exam papers to identify trends over time.
-    
+
     Args:
         exam_files: List of PDF file paths to compare
-    
+
     Returns:
         Comparison analysis with trends
     """
     if not exam_files:
         return {"error": "No exam files provided"}
-    
+
     results = []
-    
+
     for file_path in exam_files:
         content = read_pdf_content(file_path)
         if "error" not in content:
@@ -230,7 +225,7 @@ def compare_exams(exam_files: List[str]) -> dict:
                 "page_count": content.get("page_count", 0),
                 "content_length": len(content.get("content", ""))
             })
-    
+
     return {
         "total_exams": len(results),
         "exams_analyzed": results,
@@ -241,13 +236,13 @@ def compare_exams(exam_files: List[str]) -> dict:
 def list_available_exams() -> dict:
     """
     List all PDF files available in the input directory.
-    
+
     Returns:
         Dictionary with list of available exam files
     """
     try:
         pdf_files = list_input_files(".pdf")
-        
+
         return {
             "count": len(pdf_files),
             "files": [f.name for f in pdf_files],

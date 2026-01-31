@@ -6,11 +6,16 @@ This script generates synthetic exam questions in PDF format and places them
 in the input/ folder, so you can test the system without needing real exam papers.
 """
 
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.enums import TA_CENTER
+try:
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+    from reportlab.lib.enums import TA_CENTER
+    REPORTLAB_AVAILABLE = True
+except ImportError:
+    REPORTLAB_AVAILABLE = False
+
 from pathlib import Path
 
 # Import path utilities
@@ -71,7 +76,7 @@ SAMPLE_EXAMS = {
 def create_sample_pdf(filename: str, exam_data: dict):
     """Create a sample exam PDF with the given questions."""
     filepath = str(get_input_path(filename))  # Convert Path to string
-    
+
     # Create PDF document
     doc = SimpleDocTemplate(
         filepath,
@@ -81,10 +86,10 @@ def create_sample_pdf(filename: str, exam_data: dict):
         topMargin=72,
         bottomMargin=18
     )
-    
+
     # Container for the 'Flowable' objects
     elements = []
-    
+
     # Define styles
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
@@ -95,7 +100,7 @@ def create_sample_pdf(filename: str, exam_data: dict):
         spaceAfter=30,
         alignment=TA_CENTER
     )
-    
+
     question_style = ParagraphStyle(
         'Question',
         parent=styles['BodyText'],
@@ -103,12 +108,12 @@ def create_sample_pdf(filename: str, exam_data: dict):
         spaceAfter=12,
         leftIndent=20
     )
-    
+
     # Add title
     title = Paragraph(exam_data["title"], title_style)
     elements.append(title)
     elements.append(Spacer(1, 0.2*inch))
-    
+
     # Add instructions
     instructions = Paragraph(
         "<b>Instructions:</b> Answer all questions. Show all work for calculation problems. "
@@ -117,7 +122,7 @@ def create_sample_pdf(filename: str, exam_data: dict):
     )
     elements.append(instructions)
     elements.append(Spacer(1, 0.3*inch))
-    
+
     # Add questions
     for question_text, bloom_level in exam_data["questions"]:
         question = Paragraph(question_text, question_style)
@@ -142,18 +147,25 @@ def main():
     """Generate all sample exam PDFs."""
     print("Generating sample exam PDFs...\n")
 
+    # Check if reportlab is available
+    if not REPORTLAB_AVAILABLE:
+        print("ERROR: reportlab is required to generate sample PDFs")
+        print("Install it with: pip install reportlab")
+        return 1
+
     # Ensure input directory exists
     ensure_directories()
 
-    # Check if reportlab is available (already imported at module level)
     # Generate each exam
     for filename, exam_data in SAMPLE_EXAMS.items():
         try:
             create_sample_pdf(filename, exam_data)
         except Exception as e:
-            print("✗ Failed to create {filename}: {error}".format(filename=filename, error=e))
+            print("✗ Failed to create {filename}: {error}".format(
+                filename=filename, error=e))
 
-    print("\n✓ Successfully generated {count} sample exam PDFs".format(count=len(SAMPLE_EXAMS)))
+    print("\n✓ Successfully generated {count} sample exam PDFs".format(
+        count=len(SAMPLE_EXAMS)))
     print("✓ Files saved to: {path}".format(path=get_input_path('')))
     print("\nYou can now run: python demo.py")
     return 0

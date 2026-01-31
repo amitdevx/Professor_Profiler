@@ -26,11 +26,11 @@ async def test_agent_initialization():
     """Test agent initialization."""
     print("TEST 1: Agent Initialization")
     print("-" * 60)
-    
+
     assert root_agent.name == "professor_profiler_agent"
     assert len(root_agent.sub_agents) == 3
     assert len(root_agent.tools) > 0
-    
+
     print(f"✅ Root agent: {root_agent.name}")
     print("✅ Sub-agents: {sub_agents}".format(sub_agents=[a.name for a in root_agent.sub_agents]))
     print("✅ Tools: {tools}".format(tools=[t.name for t in root_agent.tools]))
