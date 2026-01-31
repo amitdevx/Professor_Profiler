@@ -255,7 +255,7 @@ class MemoryBank:
     def _generate_id(self, user_id: str, memory_type: str, content: Dict) -> str:
         """Generate unique memory ID."""
         data = f"{user_id}:{memory_type}:{json.dumps(content)}:{datetime.now().isoformat()}"
-        return hashlib.md5(data.encode()).hexdigest()[:16]
+        return hashlib.md5(data.encode(), usedforsecurity=False).hexdigest()[:16]
     
     def clear_user_memories(self, user_id: str) -> int:
         """Clear all memories for a user."""

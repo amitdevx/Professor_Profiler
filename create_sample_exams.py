@@ -9,9 +9,8 @@ in the input/ folder, so you can test the system without needing real exam paper
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
-import os
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.enums import TA_CENTER
 from pathlib import Path
 
 # Import path utilities
@@ -124,45 +123,38 @@ def create_sample_pdf(filename: str, exam_data: dict):
         question = Paragraph(question_text, question_style)
         elements.append(question)
         elements.append(Spacer(1, 0.15*inch))
-    
+
     # Add footer
     elements.append(Spacer(1, 0.5*inch))
     footer = Paragraph(
-        f"<i>This is a sample exam generated for testing purposes. "
-        f"Bloom's levels included for demonstration.</i>",
+        "<i>This is a sample exam generated for testing purposes. "
+        "Bloom's levels included for demonstration.</i>",
         styles['Italic']
     )
     elements.append(footer)
-    
+
     # Build PDF
     doc.build(elements)
-    print(f"✓ Created {filename}")
+    print("✓ Created {filename}".format(filename=filename))
 
 
 def main():
     """Generate all sample exam PDFs."""
     print("Generating sample exam PDFs...\n")
-    
+
     # Ensure input directory exists
     ensure_directories()
-    
-    # Check if reportlab is available
-    try:
-        import reportlab
-    except ImportError:
-        print("ERROR: reportlab is required to generate sample PDFs")
-        print("Install it with: pip install reportlab")
-        return 1
-    
+
+    # Check if reportlab is available (already imported at module level)
     # Generate each exam
     for filename, exam_data in SAMPLE_EXAMS.items():
         try:
             create_sample_pdf(filename, exam_data)
         except Exception as e:
-            print(f"✗ Failed to create {filename}: {e}")
-    
-    print(f"\n✓ Successfully generated {len(SAMPLE_EXAMS)} sample exam PDFs")
-    print(f"✓ Files saved to: {get_input_path('')}")
+            print("✗ Failed to create {filename}: {error}".format(filename=filename, error=e))
+
+    print("\n✓ Successfully generated {count} sample exam PDFs".format(count=len(SAMPLE_EXAMS)))
+    print("✓ Files saved to: {path}".format(path=get_input_path('')))
     print("\nYou can now run: python demo.py")
     return 0
 

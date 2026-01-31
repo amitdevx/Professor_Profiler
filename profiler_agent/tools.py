@@ -1,7 +1,7 @@
 """Custom tools for the Professor Profiler agent."""
 import os
 import json
-from typing import Dict, List, Any
+from typing import List
 from pathlib import Path
 from collections import Counter
 from .paths import get_input_path, get_output_path, list_input_files
@@ -19,7 +19,7 @@ except ImportError:
     plt = None
 
 try:
-    import pandas as pd
+    import pandas as pd  # noqa: F401 - imported for optional functionality
 except ImportError:
     pd = None
 
@@ -252,7 +252,7 @@ def list_available_exams() -> dict:
             "count": len(pdf_files),
             "files": [f.name for f in pdf_files],
             "paths": [str(f) for f in pdf_files],
-            "message": f"Found {len(pdf_files)} PDF file(s) in input/ directory"
+            "message": "Found {count} PDF file(s) in input/ directory".format(count=len(pdf_files))
         }
     except Exception as e:
-        return {"error": f"Failed to list files: {str(e)}"}
+        return {"error": "Failed to list files: {error}".format(error=str(e))}

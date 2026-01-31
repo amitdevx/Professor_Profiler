@@ -8,7 +8,7 @@ from functools import wraps
 from datetime import datetime
 from collections import defaultdict
 import threading
-from .paths import get_output_path, LOGS_DIR
+from .paths import get_output_path
 
 
 # Configure structured logging

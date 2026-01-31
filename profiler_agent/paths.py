@@ -1,5 +1,4 @@
 """Path configuration for input and output directories."""
-import os
 from pathlib import Path
 
 
