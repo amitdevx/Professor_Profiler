@@ -327,6 +327,6 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ---
 
-**Maintained by [uffamit](https://github.com/uffamit)**  
+**Maintained by  [uffamit](https://github.com/uffamit)**  
 Website: https://amitdevx.tech
 
