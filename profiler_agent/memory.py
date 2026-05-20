@@ -252,6 +252,66 @@ class MemoryBank:
 
         return "\n".join(context_parts)
 
+
+    async def compact_and_summarize(
+        self,
+        user_id: Optional[str] = None,
+        max_memories_per_user: int = 20,
+        max_content_chars: int = 2000
+    ) -> int:
+        """Compact older memories into one summary memory per user.
+
+        This keeps prompts smaller for NIM models while preserving a concise
+        record of older context. Returns the number of memories compacted.
+        """
+        target_users = [user_id] if user_id else list(self.memories.keys())
+        compacted_total = 0
+
+        for uid in target_users:
+            user_memories = sorted(
+                self.memories.get(uid, []),
+                key=lambda memory: memory.get("created_at", ""),
+                reverse=True,
+            )
+            if len(user_memories) <= max_memories_per_user:
+                continue
+
+            keep = user_memories[:max_memories_per_user]
+            compact = user_memories[max_memories_per_user:]
+            type_counts = defaultdict(int)
+            tags = set()
+            samples = []
+
+            for memory in compact:
+                type_counts[memory.get("type", "unknown")] += 1
+                tags.update(memory.get("tags", []))
+                if len(samples) < 3:
+                    sample = json.dumps(memory.get("content", {}))[:max_content_chars]
+                    samples.append(sample)
+
+            summary_content = {
+                "compacted_count": len(compact),
+                "by_type": dict(type_counts),
+                "tags": sorted(tags),
+                "samples": samples,
+            }
+            summary_memory = {
+                "id": self._generate_id(uid, "compacted_summary", summary_content),
+                "user_id": uid,
+                "type": "compacted_summary",
+                "content": summary_content,
+                "tags": ["compacted", "nim"],
+                "created_at": datetime.now().isoformat(),
+                "access_count": 0,
+                "last_accessed": None,
+            }
+            self.memories[uid] = keep + [summary_memory]
+            compacted_total += len(compact)
+
+        if compacted_total:
+            self.save()
+        return compacted_total
+
     def _generate_id(self, user_id: str, memory_type: str, content: Dict) -> str:
         """Generate unique memory ID."""
         data = f"{user_id}:{memory_type}:{json.dumps(content)}:{datetime.now().isoformat()}"

@@ -8,6 +8,8 @@ from .tools import read_pdf_content, analyze_statistics, visualize_trends, compa
 professor_profiler_agent = Agent(
     name="professor_profiler_agent",
     model=config.analyzer_model,
+    gemini_model=config.gemini_analyzer_model,
+    nim_model=config.nim_analyzer_model,
     description="Main orchestrator. Ingests PDFs, classifies questions, finds trends, and creates study plans.",
     instruction=f"""Workflow:
 1. Use read_pdf_content tool to ingest exam paper PDFs
@@ -26,7 +28,7 @@ You have access to these tools:
 - compare_exams: Compare multiple exam papers
 
 Your sub-agents are:
-- taxonomist: Classifies questions (fast, using flash model)
+- taxonomist: Classifies questions (fast model)
 - trend_spotter: Analyzes trends (detailed analysis)
 - strategist: Generates study plans (actionable recommendations)""",
     sub_agents=[taxonomist, trend_spotter, strategist],

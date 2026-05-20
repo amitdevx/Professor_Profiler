@@ -3,6 +3,8 @@ from ..config import config
 
 strategist = Agent(
     model=config.analyzer_model,
+    gemini_model=config.gemini_analyzer_model,
+    nim_model=config.nim_analyzer_model,
     name="strategist",
     description="Generates actionable study plans.",
     instruction=(

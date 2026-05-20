@@ -4,6 +4,8 @@ from ..agent_utils import suppress_output_callback
 
 trend_spotter = Agent(
     model=config.analyzer_model,
+    gemini_model=config.gemini_analyzer_model,
+    nim_model=config.nim_analyzer_model,
     name="trend_spotter",
     description="Analyzes statistical shifts in exam data over time.",
     instruction="Analyze the tagged questions to find Frequency Shifts and Cognitive Shifts. Output a 'Shift Report'.",

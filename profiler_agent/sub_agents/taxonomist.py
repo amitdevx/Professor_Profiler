@@ -4,6 +4,8 @@ from ..agent_utils import suppress_output_callback
 
 taxonomist = Agent(
     model=config.classifier_model,
+    gemini_model=config.gemini_classifier_model,
+    nim_model=config.nim_classifier_model,
     name="taxonomist",
     description="Classifies educational questions by topic and cognitive difficulty.",
     instruction=(

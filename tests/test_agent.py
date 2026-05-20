@@ -31,9 +31,9 @@ async def test_agent_initialization():
     assert len(root_agent.sub_agents) == 3
     assert len(root_agent.tools) > 0
 
-    print(f"✅ Root agent: {root_agent.name}")
-    print("✅ Sub-agents: {sub_agents}".format(sub_agents=[a.name for a in root_agent.sub_agents]))
-    print("✅ Tools: {tools}".format(tools=[t.name for t in root_agent.tools]))
+    print(f"Success: Root agent: {root_agent.name}")
+    print("Success: Sub-agents: {sub_agents}".format(sub_agents=[a.name for a in root_agent.sub_agents]))
+    print("Success: Tools: {tools}".format(tools=[t.name for t in root_agent.tools]))
     print()
 
 
@@ -53,7 +53,7 @@ async def test_session_service():
     )
 
     assert session["session_id"] == "test_session"
-    print("✅ Created session: {session_id}".format(session_id=session['session_id']))
+    print("Success: Created session: {session_id}".format(session_id=session['session_id']))
 
     # Add messages
     await session_service.add_message(
@@ -71,7 +71,7 @@ async def test_session_service():
     )
 
     assert len(messages) == 1
-    print("✅ Added and retrieved message")
+    print("Success: Added and retrieved message")
 
     # Update context
     await session_service.update_context(
@@ -88,7 +88,7 @@ async def test_session_service():
     )
 
     assert context["test_key"] == "test_value"
-    print("✅ Updated and retrieved context")
+    print("Success: Updated and retrieved context")
     print()
 
 
@@ -110,7 +110,7 @@ async def test_tools():
     # Test PDF tool
     result = read_pdf_content(test_file)
     assert "filename" in result or "error" in result
-    print("✅ PDF tool executed: {filename}".format(filename=result.get('filename', 'error')))
+    print("Success: PDF tool executed: {filename}".format(filename=result.get('filename', 'error')))
 
     # Test statistics tool
     mock_data = {
@@ -123,7 +123,7 @@ async def test_tools():
     stats = analyze_statistics(json.dumps(mock_data))
     assert "total_questions" in stats
     assert stats["total_questions"] == 2
-    print("✅ Statistics tool executed: {count} questions".format(count=stats['total_questions']))
+    print("Success: Statistics tool executed: {count} questions".format(count=stats['total_questions']))
     print()
 
 
@@ -170,7 +170,7 @@ async def test_runner_execution():
             print("Response received: {response}...".format(response=final_response[:100]))
 
     assert final_response is not None
-    print("✅ Runner executed successfully")
+    print("Success: Runner executed successfully")
     print()
 
 
@@ -192,17 +192,17 @@ async def test_memory_bank():
         tags=["test"]
     )
 
-    print("✅ Added memory: {memory_id}".format(memory_id=memory_id))
+    print("Success: Added memory: {memory_id}".format(memory_id=memory_id))
 
     # Retrieve memory
     memories = memory_bank.get_memories("test_user")
     assert len(memories) > 0
-    print("✅ Retrieved {count} memories".format(count=len(memories)))
+    print("Success: Retrieved {count} memories".format(count=len(memories)))
 
     # Search
     results = memory_bank.search_memories("test_user", "value")
     assert len(results) > 0
-    print("✅ Search found {count} results".format(count=len(results)))
+    print("Success: Search found {count} results".format(count=len(results)))
 
     # Cleanup
     if os.path.exists("test_memory.json"):
@@ -219,9 +219,9 @@ async def main():
 
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        print("⚠️  GOOGLE_API_KEY not set - using mock responses")
+        print("Warning: GOOGLE_API_KEY not set - using mock responses")
     else:
-        print("✅ GOOGLE_API_KEY configured")
+        print("Success: GOOGLE_API_KEY configured")
 
     print()
 
@@ -233,14 +233,14 @@ async def main():
         await test_runner_execution()
 
         print("="*60)
-        print("✅ ALL TESTS PASSED")
+        print("Success: ALL TESTS PASSED")
         print("="*60)
 
     except AssertionError as e:
-        print("\n❌ TEST FAILED: {error}".format(error=e))
+        print("\nError: TEST FAILED: {error}".format(error=e))
         raise
     except Exception as e:
-        print("\n❌ ERROR: {error}".format(error=e))
+        print("\nError: ERROR: {error}".format(error=e))
         import traceback
         traceback.print_exc()
         raise

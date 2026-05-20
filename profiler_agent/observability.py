@@ -215,6 +215,68 @@ tracer = Tracer()
 metrics = MetricsCollector()
 
 
+class MigrationMetrics:
+    """Track provider migration metrics for NIM rollout visibility."""
+
+    def __init__(self):
+        self._lock = threading.Lock()
+        self._metrics = {
+            "nim_requests": 0,
+            "nim_failures": 0,
+            "nim_latency_ms": [],
+            "fallback_to_gemini": 0,
+            "rate_limit_hits": 0,
+        }
+
+    def log_request(self, model: str, latency_ms: float, success: bool):
+        with self._lock:
+            self._metrics["nim_requests"] += 1
+            if not success:
+                self._metrics["nim_failures"] += 1
+            self._metrics["nim_latency_ms"].append(latency_ms)
+            request_count = self._metrics["nim_requests"]
+            recent_latency = list(self._metrics["nim_latency_ms"][-10:])
+
+        metrics.histogram("nim.request.duration_ms", latency_ms, {"model": model})
+        metrics.increment("nim.request.success" if success else "nim.request.failure", tags={"model": model})
+
+        if request_count % 10 == 0 and recent_latency:
+            logging.getLogger(__name__).info(json.dumps({
+                "type": "migration_metrics",
+                "provider": "nim",
+                "model": model,
+                "requests": request_count,
+                "avg_latency_ms": sum(recent_latency) / len(recent_latency),
+                "failures": self._metrics["nim_failures"],
+                "fallbacks": self._metrics["fallback_to_gemini"],
+            }))
+
+    def log_fallback(self):
+        with self._lock:
+            self._metrics["fallback_to_gemini"] += 1
+        metrics.increment("nim.fallback_to_gemini")
+
+    def log_rate_limit_hit(self):
+        with self._lock:
+            self._metrics["rate_limit_hits"] += 1
+        metrics.increment("nim.rate_limit_hit")
+
+    def snapshot(self) -> Dict[str, Any]:
+        with self._lock:
+            latency = list(self._metrics["nim_latency_ms"])
+            return {
+                "nim_requests": self._metrics["nim_requests"],
+                "nim_failures": self._metrics["nim_failures"],
+                "fallback_to_gemini": self._metrics["fallback_to_gemini"],
+                "rate_limit_hits": self._metrics["rate_limit_hits"],
+                "avg_latency_ms": (sum(latency) / len(latency)) if latency else 0,
+            }
+
+
+migration_metrics = MigrationMetrics()
+
+
+
 def trace_operation(operation_name: str):
     """Decorator to trace function execution."""
     def decorator(func):
