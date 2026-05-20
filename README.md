@@ -287,5 +287,5 @@ Professor_Profiler/
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more details.
 
-**Maintained by [uffamit](https://github.com/uffamit)**  
+**Maintained by [amitdevx](https://github.com/amitdevx)**  
 Website: [amitdevx.tech](https://amitdevx.tech)
