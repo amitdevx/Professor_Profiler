@@ -51,10 +51,18 @@ def read_pdf_content(file_path: str) -> dict:
         reader = PdfReader(file_path)
         text = ""
         page_count = len(reader.pages)
+        has_text = False
 
         for page_num, page in enumerate(reader.pages, 1):
-            page_text = page.extract_text()
+            page_text = page.extract_text() or ""
+            if page_text.strip():
+                has_text = True
             text += f"\n--- Page {page_num} ---\n{page_text}"
+
+        if not has_text:
+            return {
+                "error": "The PDF does not contain any extractable text. It might be scanned or empty. Please provide a searchable (OCR-ed) PDF."
+            }
 
         return {
             "filename": os.path.basename(file_path),
@@ -79,7 +87,16 @@ def analyze_statistics(questions_data: str) -> dict:
     try:
         # Parse input if it's a string
         if isinstance(questions_data, str):
-            data = json.loads(questions_data)
+            cleaned = questions_data.strip()
+            # Remove markdown code block wrapping if present
+            if cleaned.startswith("```"):
+                lines = cleaned.splitlines()
+                if lines[0].startswith("```"):
+                    lines = lines[1:]
+                if lines and lines[-1].startswith("```"):
+                    lines = lines[:-1]
+                cleaned = "\n".join(lines).strip()
+            data = json.loads(cleaned)
         else:
             data = questions_data
 
