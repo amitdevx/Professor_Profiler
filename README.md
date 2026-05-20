@@ -23,47 +23,54 @@ The system creates a directed acyclic graph (DAG) of agent execution, managed by
 ### High-Level Design
 
 ```mermaid
-flowchart TD
-    subgraph External_Layer [" External Layer"]
-        User([User / Client])
-        PDF_File[Exam PDF]
-    end
+flowchart LR
 
-    subgraph Orchestration_Layer [" Orchestration Layer"]
-        Runner[<b>Runner</b><br><i>State Management</i>]
-        Memory[(<b>Memory Bank</b><br><i>JSON Persistence</i>)]
-        Session[<b>Session Service</b>]
-    end
+    User([User])
 
-    subgraph Agent_Layer [" Agent Hierarchy"]
-        Root[<b>ROOT AGENT</b><br><i>Llama 3.3 70B (NIM)</i><br>The Orchestrator]
-        
-        subgraph Workers ["Specialized Sub-Agents"]
-            Taxonomist[<b>Taxonomist</b><br><i>Llama 3.1 70B (NIM)</i><br>Topic & Bloom's Classification]
-            Trend[<b>Trend Spotter</b><br><i>Llama 3.3 70B (NIM)</i><br>Statistical Analysis]
-            Strat[<b>Strategist</b><br><i>Llama 3.3 70B (NIM)</i><br>Study Planning]
+    subgraph System["Professor Profiler"]
+
+        subgraph Runtime["Runtime Layer"]
+            Runner["Runner"]
+            Memory[("Memory Bank")]
+            Session["Session Service"]
+        end
+
+        subgraph Agents["Multi-Agent System"]
+
+            Root["Root Agent"]
+
+            Taxonomist["Taxonomist"]
+            Trend["Trend Spotter"]
+            Strategist["Strategist"]
+
+        end
+
+        subgraph Tools["Tools"]
+
+            Reader["PDF Reader"]
+            Stats["Statistics Engine"]
+            Charts["Visualization Engine"]
+
         end
     end
 
-    subgraph Tool_Layer [" Tool Layer"]
-        Reader[PDF Ingestion]
-        Plotter[Matplotlib Viz]
-        Calc[Stats Engine]
-    end
+    PDF[(Exam PDFs)]
 
     User --> Runner
-    PDF_File --> Reader
-    Runner <--> Session
-    Runner <--> Memory
     Runner --> Root
-    
-    Root --Delegates--> Taxonomist
-    Root --Delegates--> Trend
-    Root --Delegates--> Strat
-    
-    Root --Calls--> Reader
-    Root --Calls--> Plotter
-    Trend --Calls--> Calc
+
+    PDF --> Reader
+
+    Root --> Taxonomist
+    Root --> Trend
+    Root --> Strategist
+
+    Root --> Reader
+    Trend --> Stats
+    Root --> Charts
+
+    Runner <--> Memory
+    Runner <--> Session
 ```
 
 ---
