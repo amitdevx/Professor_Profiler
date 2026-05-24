@@ -1,0 +1,20 @@
+2026-05-24 17:19:54 - root - INFO - Logging to file: /home/amitdevx/Code/Professor_Profiler/logs/agent_run.log
+2026-05-24 17:20:03 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:21:52 - root - INFO - Logging to file: /home/amitdevx/Code/Professor_Profiler/logs/agent_run.log
+2026-05-24 17:22:05 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:43:35 - root - INFO - Logging to file: /home/amitdevx/Code/Professor_Profiler/logs/agent_run.log
+2026-05-24 17:43:38 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:43:41 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:43:47 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:44:11 - root - INFO - Logging to file: /home/amitdevx/Code/Professor_Profiler/logs/agent_run.log
+2026-05-24 17:44:15 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:45:09 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:46:27 - openai._base_client - INFO - Retrying request to /chat/completions in 0.845804 seconds
+2026-05-24 17:47:01 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:48:04 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:48:24 - root - INFO - Logging to file: /home/amitdevx/Code/Professor_Profiler/logs/agent_run.log
+2026-05-24 17:48:58 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:49:02 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:49:13 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:49:35 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-05-24 17:50:18 - httpx - INFO - HTTP Request: POST https://integrate.api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"

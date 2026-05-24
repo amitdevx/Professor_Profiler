@@ -62,7 +62,7 @@ def setup_logging(level: str = "INFO", structured: bool = False, log_file: Optio
 
     # Create console handler
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(log_level)
+    console_handler.setLevel(logging.WARNING)
 
     # Set formatter
     if structured:

@@ -41,11 +41,25 @@ def read_pdf_content(file_path: str) -> dict:
             file_path = str(input_file)
         else:
             return {
-                "error": f"File not found: {file_path}. Please place exam PDFs in the 'input/' folder."
+                "error": f"File not found: {file_path}. Please provide a valid file path or place exam PDFs in the current working directory."
             }
 
     if not os.path.exists(file_path):
         return {"error": f"File not found: {file_path}"}
+
+    # Handle text files directly to prevent pypdf errors
+    if file_path.lower().endswith(('.txt', '.md', '.json', '.csv')):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return {
+                "filename": os.path.basename(file_path),
+                "content": content,
+                "page_count": 1,
+                "file_path": file_path
+            }
+        except Exception as e:
+            return {"error": f"Failed to read text file: {str(e)}"}
 
     try:
         reader = PdfReader(file_path)
@@ -264,7 +278,7 @@ def list_available_exams() -> dict:
             "count": len(pdf_files),
             "files": [f.name for f in pdf_files],
             "paths": [str(f) for f in pdf_files],
-            "message": "Found {count} PDF file(s) in input/ directory".format(count=len(pdf_files))
+            "message": "Found {count} PDF file(s) in the input directory".format(count=len(pdf_files))
         }
     except Exception as e:
         return {"error": "Failed to list files: {error}".format(error=str(e))}

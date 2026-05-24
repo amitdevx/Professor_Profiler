@@ -56,9 +56,9 @@ class NIMClient:
         self.client = None
 
         if not self.api_key:
-            logger.warning("No NIM_API_KEY found; NIM client will return mock responses")
+            raise RuntimeError("CRITICAL: NIM_API_KEY is not set. Mock mode disabled.")
         elif AsyncOpenAI is None:
-            logger.warning("openai package is not installed; NIM client will return mock responses")
+            raise RuntimeError("CRITICAL: openai package is not installed. Mock mode disabled.")
         else:
             self.client = AsyncOpenAI(
                 api_key=self.api_key,
@@ -76,7 +76,7 @@ class NIMClient:
     ) -> str:
         """Generate a text response or a serialized tool call request."""
         if not self.client:
-            return f"[NIM Mock] {prompt[:100]}"
+            raise RuntimeError("NIM Client not initialized (missing API key or openai package)")
 
         messages = []
         if system_instruction:

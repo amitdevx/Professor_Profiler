@@ -5,11 +5,11 @@ from pathlib import Path
 # Project root directory
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-# Input directory for exam PDFs
-INPUT_DIR = PROJECT_ROOT / "input"
+import os
 
 # Output directories
-OUTPUT_DIR = PROJECT_ROOT / "output"
+INPUT_DIR = Path(os.environ.get("PROF_INPUT_DIR", PROJECT_ROOT / "input"))
+OUTPUT_DIR = Path(os.environ.get("PROF_OUTPUT_DIR", PROJECT_ROOT / "output"))
 CHARTS_DIR = OUTPUT_DIR / "charts"
 LOGS_DIR = OUTPUT_DIR / "logs"
 REPORTS_DIR = OUTPUT_DIR / "reports"
@@ -35,6 +35,11 @@ def get_input_path(filename: str) -> Path:
         Path object for the input file
     """
     ensure_directories()
+    
+    path = Path(filename)
+    if path.is_absolute():
+        return path
+        
     return INPUT_DIR / filename
 
 

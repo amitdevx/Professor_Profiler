@@ -298,17 +298,24 @@ class Agent:
         return json.dumps({"error": f"Tool {function_name} not found"})
 
     async def _execute_sub_agents(self, parent_response: str) -> str:
-        """Run sub-agents sequentially using the parent agent's response."""
+        """Run sub-agents in parallel using the parent agent's response."""
+        import asyncio
         results = [f"[{self.name} Initial Response]\n{parent_response}"]
 
-        for sub_agent in self.sub_agents:
-            result = await sub_agent.run(
-                prompt=parent_response,
-                context=self.context
-            )
-            response_text = result.get("response", "")
-            if not response_text and result.get("error"):
-                response_text = f"Error: {result['error']}"
+        tasks = [
+            sub_agent.run(prompt=parent_response, context=self.context)
+            for sub_agent in self.sub_agents
+        ]
+        
+        sub_results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        for sub_agent, result in zip(self.sub_agents, sub_results):
+            if isinstance(result, Exception):
+                response_text = f"Error: {result}"
+            else:
+                response_text = result.get("response", "")
+                if not response_text and result.get("error"):
+                    response_text = f"Error: {result['error']}"
             results.append(f"\n[{sub_agent.name} Response]\n{response_text}")
 
         return "\n".join(results)

@@ -14,7 +14,10 @@ if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
 
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(repo_root / ".env")
+
+import warnings
+warnings.filterwarnings("ignore")
 
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
@@ -40,7 +43,7 @@ def generate_sample_exams_if_needed():
     """Automatically generate sample PDFs if input/ is empty."""
     input_files = list_input_files(".pdf")
     if not input_files:
-        print("No exam PDFs found in input/ folder.")
+        print("No exam PDFs found in the input directory.")
         print("Running create_sample_exams.py to generate mock exams...")
         try:
             from create_sample_exams import main as generate_main
@@ -51,10 +54,12 @@ def generate_sample_exams_if_needed():
     return input_files
 
 
-async def run_analysis(pdf_filename: str):
+async def run_analysis(pdf_filename: str, agent_name: str = "all"):
     """Run the multi-agent profiling pipeline on the selected PDF."""
     print("\n" + "="*80)
     print(f"Initializing Analysis for: {pdf_filename}")
+    if agent_name != "all":
+        print(f"Targeting Agent: {agent_name}")
     print("="*80)
 
     # Initialize directories and logging
@@ -67,8 +72,7 @@ async def run_analysis(pdf_filename: str):
     api_key = os.getenv(api_key_var)
 
     if not api_key:
-        print(f"WARNING: {api_key_var} is not set in environment or .env file.")
-        print("   The runner will execute in OFFLINE MOCK mode.")
+        raise ValueError(f"CRITICAL: {api_key_var} is not set in environment or .env file. Mock mode is disabled.")
     else:
         print(f"Using LLM Provider: {provider.upper()}")
 
@@ -81,20 +85,36 @@ async def run_analysis(pdf_filename: str):
         session_id=session_id
     )
 
+    # Determine which agent to run
+    agent_to_run = root_agent
+    if agent_name != "all":
+        # Find sub-agent by name if specified
+        found = False
+        for sub in root_agent.sub_agents:
+            if sub.name.lower() == agent_name.lower():
+                agent_to_run = sub
+                found = True
+                break
+        if not found:
+            print(f"Warning: agent '{agent_name}' not found. Defaulting to orchestrator.")
+    
     # Initialize Runner
     runner = Runner(
-        agent=root_agent,
+        agent=agent_to_run,
         app_name="professor_profiler",
         session_service=session_service,
         llm_provider=provider
     )
 
-    # Formulate prompt query
-    query = (
-        f"Analyze the exam paper {pdf_filename}. Make sure to execute the entire workflow: "
-        "1) read the PDF content, 2) classify all questions, 3) compute the topic and Bloom's level "
-        "statistics, 4) generate and save a visualization chart, and 5) formulate the final study plan."
-    )
+    # Formulate prompt query based on agent
+    if agent_name == "all":
+        query = (
+            f"Analyze the exam paper {pdf_filename}. Make sure to execute the entire workflow: "
+            "1) read the PDF content, 2) classify all questions, 3) compute the topic and Bloom's level "
+            "statistics, 4) generate and save a visualization chart, and 5) formulate the final study plan."
+        )
+    else:
+        query = f"Please process the exam paper {pdf_filename} according to your specialization."
     
     print("\nExecuting Agent Pipeline (Root Orchestrator + Sub-agents)...")
     print("--------------------------------------------------------------------------------")
@@ -161,10 +181,10 @@ def main():
     # Check/generate PDFs
     pdf_files = generate_sample_exams_if_needed()
     if not pdf_files:
-        print("Error: No PDFs available. Please place a PDF in the input/ folder and restart.")
+        print("Error: No PDFs available. Please place a PDF in the input directory and restart.")
         sys.exit(1)
 
-    print("\nAvailable Exam PDFs in 'input/' folder:")
+    print("\nAvailable Exam PDFs in the input directory:")
     for idx, f in enumerate(pdf_files, 1):
         print(f"  [{idx}] {f.name}")
     print(f"  [{len(pdf_files) + 1}] Enter custom filename / absolute path")
@@ -176,7 +196,7 @@ def main():
         else:
             choice_idx = int(choice)
             if choice_idx == len(pdf_files) + 1:
-                selected_file = input("Enter filename (in input/) or absolute path: ").strip()
+                selected_file = input("Enter filename (in input directory) or absolute path: ").strip()
             elif 1 <= choice_idx <= len(pdf_files):
                 selected_file = pdf_files[choice_idx - 1].name
             else:

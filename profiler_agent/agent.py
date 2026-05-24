@@ -12,7 +12,7 @@ professor_profiler_agent = Agent(
     nim_model=config.nim_analyzer_model,
     description="Main orchestrator. Ingests PDFs, classifies questions, finds trends, and creates study plans.",
     instruction=f"""Workflow:
-1. Use read_pdf_content tool to ingest exam paper PDFs
+1. If you need to read an external PDF and the text is not already provided, use read_pdf_content to ingest it. If the file's content is already provided inline in the prompt, DO NOT use read_pdf_content.
 2. Delegate to taxonomist sub-agent to classify questions by topic and Bloom's taxonomy
 3. Use analyze_statistics tool to compute frequency distributions
 4. Delegate to trend_spotter sub-agent to identify statistical shifts

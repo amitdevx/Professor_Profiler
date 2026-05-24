@@ -149,6 +149,15 @@ class Runner:
                     metadata={"provider": provider_used, "fallback_used": fallback_used}
                 )
 
+            if not isinstance(response_text, str):
+                if hasattr(response_text, "parts") and getattr(response_text, "parts", None):
+                    try:
+                        response_text = response_text.parts[0].text
+                    except AttributeError:
+                        response_text = str(response_text)
+                else:
+                    response_text = str(response_text)
+                    
             yield RunnerEvent(
                 content=genai_types.Content(
                     role="assistant",
@@ -181,14 +190,13 @@ class Runner:
             return NIMClient()
         if provider == "gemini":
             if not self.api_key:
-                logger.warning("No GOOGLE_API_KEY found; Gemini runner will use mock responses")
-                return None
+                raise RuntimeError("CRITICAL: GOOGLE_API_KEY is not set. Mock mode disabled.")
             return genai.Client(api_key=self.api_key)
         raise ValueError(f"Unknown LLM_PROVIDER: {provider}")
 
     async def _run_agent_once(self, provider: str, client: Any, prompt: str, context: Dict[str, Any]) -> str:
         if not client:
-            return f"[Mock Response] {self.agent.name} processed: {prompt[:100]}"
+            raise RuntimeError(f"Client not initialized for provider {provider}")
 
         await self.agent.initialize(client, provider=provider)
         result = await self.agent.run(prompt=prompt, context=context)

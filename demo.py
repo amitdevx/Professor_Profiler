@@ -9,7 +9,7 @@ This demo showcases:
 5. Gemini API integration
 
 Usage:
-    # Place your exam PDFs in the input/ folder
+    # Place your exam PDFs in the input directory
     export GOOGLE_API_KEY=your_api_key_here
     python demo.py
 
@@ -73,7 +73,7 @@ async def demo_basic_workflow():
         with open(sample_pdf, "w") as f:
             f.write("Mock PDF content for testing")
 
-    # Run agent with query (use just the filename, tool will look in input/)
+    # Run agent with query (use just the filename, tool will look in input directory)
     query = "Analyze the exam paper physics_2024.pdf and tell me what topics to focus on."
     print(f"\nQuery: {query}")
     print("\nAgent Response:")
@@ -238,14 +238,14 @@ async def demo_tools():
     )
 
     # List available exams
-    print("\nListing available exams in input/ folder...")
+    print("\nListing available exams in the input directory...")
     available = list_available_exams()
     if available.get("count", 0) > 0:
         print("  Found {count} exam(s):".format(count=available['count']))
         for filename in available.get("files", []):
             print("     - {filename}".format(filename=filename))
     else:
-        print("  No exams found in input/ folder")
+        print("  No exams found in the input directory")
 
     # Create mock PDF in input folder
     test_pdf = get_input_path("demo_exam.pdf")
@@ -342,7 +342,7 @@ async def main():
 
     # Check for input files
     input_files = list_input_files()
-    print("\nFound {count} PDF file(s) in input/ folder".format(count=len(input_files)))
+    print("\nFound {count} PDF file(s) in the input directory".format(count=len(input_files)))
     if input_files:
         for f in input_files[:3]:  # Show first 3
             print("   - {name}".format(name=f.name))
