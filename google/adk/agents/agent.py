@@ -255,6 +255,16 @@ class Agent:
                 return json.dumps({"error": f"Invalid NIM tool call: {exc}"})
             return await self._execute_tool_call_by_name(tool_name, args)
 
+        try:
+            parsed = json.loads(response)
+            if isinstance(parsed, dict) and "name" in parsed and ("parameters" in parsed or "arguments" in parsed):
+                args = parsed.get("parameters") or parsed.get("arguments") or {}
+                if isinstance(args, str):
+                    args = json.loads(args)
+                return await self._execute_tool_call_by_name(parsed["name"], args)
+        except Exception:
+            pass
+
         return response
 
     async def _execute_tool_call(self, function_call) -> str:
@@ -298,25 +308,24 @@ class Agent:
         return json.dumps({"error": f"Tool {function_name} not found"})
 
     async def _execute_sub_agents(self, parent_response: str) -> str:
-        """Run sub-agents in parallel using the parent agent's response."""
-        import asyncio
+        """Run sub-agents sequentially using the accumulated context."""
         results = [f"[{self.name} Initial Response]\n{parent_response}"]
-
-        tasks = [
-            sub_agent.run(prompt=parent_response, context=self.context)
-            for sub_agent in self.sub_agents
-        ]
         
-        sub_results = await asyncio.gather(*tasks, return_exceptions=True)
-        
-        for sub_agent, result in zip(self.sub_agents, sub_results):
-            if isinstance(result, Exception):
-                response_text = f"Error: {result}"
-            else:
+        current_context = parent_response
+        for sub_agent in self.sub_agents:
+            try:
+                result = await sub_agent.run(prompt=current_context, context=self.context)
                 response_text = result.get("response", "")
                 if not response_text and result.get("error"):
                     response_text = f"Error: {result['error']}"
+            except Exception as e:
+                response_text = f"Error: {e}"
+            
             results.append(f"\n[{sub_agent.name} Response]\n{response_text}")
+            
+            # Append this agent's response to the context for the next agent
+            if response_text and not response_text.startswith("Error:"):
+                current_context += f"\n\n--- Output from {sub_agent.name} ---\n{response_text}"
 
         return "\n".join(results)
 

@@ -172,6 +172,31 @@ export class FileService {
   }
 
   /**
+   * Read text content from a file.
+   * For PDF, doc, and docx, runs a Python subprocess (using virtualenv python if present)
+   * to parse using backend tools. For other extensions, reads using fs.readFile.
+   */
+  async readFileText(fileInfo: FileInfo): Promise<string> {
+    const ext = path.extname(fileInfo.path).toLowerCase();
+    if (ext === '.pdf' || ext === '.docx' || ext === '.doc') {
+      const { fileURLToPath } = await import('node:url');
+      const __dirname = path.dirname(fileURLToPath(import.meta.url));
+      const repoRoot = path.resolve(__dirname, '../../');
+      
+      const venvPython = path.resolve(repoRoot, '.venv/bin/python');
+      const pythonExec = fs.existsSync(venvPython) ? venvPython : 'python3';
+
+      const script = `import sys; sys.path.insert(0, '${repoRoot}'); from profiler_agent.tools import read_pdf_content; import json; print(json.dumps(read_pdf_content('${fileInfo.path}')))`;
+      const { execSync } = await import('node:child_process');
+      const result = execSync(`"${pythonExec}" -c "${script}"`, { stdio: ['pipe', 'pipe', 'ignore'] }).toString();
+      const parsed = JSON.parse(result);
+      if (parsed.error) throw new Error(parsed.error);
+      return parsed.content;
+    }
+    return await fs.readFile(fileInfo.path, 'utf-8');
+  }
+
+  /**
    * Map a file extension to its human-readable type name.
    *
    * @param ext - The file extension (including leading dot).

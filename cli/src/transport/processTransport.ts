@@ -53,12 +53,19 @@ asyncio.run(run_analysis(sys.argv[1], sys.argv[2]))
       cwd: process.cwd()
     });
 
+    let stderrData = '';
     if (this.child.stderr) {
       this.child.stderr.on('data', (data) => {
-        const msg = data.toString().trim();
-        if (msg) console.error(chalk.red(`[Backend Error] ${msg}`));
+        stderrData += data.toString();
       });
     }
+
+    this.child.on('close', (code) => {
+      const exitCode = code ?? 0;
+      if (exitCode !== 0 && stderrData.trim()) {
+        console.error(chalk.red(`\n[Backend Error] Process exited with code ${exitCode}:\n${stderrData.trim()}`));
+      }
+    });
 
     if (signal) {
       signal.addEventListener('abort', () => {

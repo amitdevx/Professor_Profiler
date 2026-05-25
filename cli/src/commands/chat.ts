@@ -10,6 +10,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import fs from 'fs-extra';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 import { fileService } from '../services/fileService.js';
 
 import { customReplPrompt } from '../ui/components/repl.js';
@@ -72,6 +73,7 @@ export function createChatCommand(): Command {
     .description('Start an interactive AI chat session')
     .action(async () => {
       const history: string[] = [];
+      const responseTimes: number[] = [];
 
       console.log('');
       console.log(chalk.bold.hex('#4cc9f0')('  💬 Interactive Chat Mode'));
@@ -157,7 +159,7 @@ export function createChatCommand(): Command {
               const fileInfo = fileService.resolveFilePath(mention);
               const validation = fileService.validateFile(fileInfo);
               if (validation.valid) {
-                const content = await fs.readFile(fileInfo.path, 'utf-8');
+                const content = await fileService.readFileText(fileInfo);
                 finalPrompt += `\n\n--- Contents of ${fileInfo.name} ---\n${content}\n`;
                 console.log(chalk.dim(`  📎 Attached: ${chalk.white(fileInfo.name)}`));
               } else {
@@ -180,11 +182,17 @@ export function createChatCommand(): Command {
         // We will record it alongside the AI's response to maintain perfect pairs.
 
         console.log('');
+        const startTime = Date.now();
         const responseText = await pythonRunner.runChatStream(finalPrompt, 'chat', history);
+        const elapsed = (Date.now() - startTime) / 1000;
         if (responseText) {
           // Push both user input and response to maintain context
           history.push(finalPrompt);
           history.push(responseText);
+          responseTimes.push(elapsed);
+          
+          const avg = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
+          console.log(chalk.dim.italic(`  ⏱️  AI Response Time: ${elapsed.toFixed(1)}s (Session Avg: ${avg.toFixed(1)}s)`));
         }
         console.log('');
       }

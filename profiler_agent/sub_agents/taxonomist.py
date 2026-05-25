@@ -9,9 +9,9 @@ taxonomist = Agent(
     name="taxonomist",
     description="Classifies educational questions by topic and cognitive difficulty.",
     instruction=(
-        "For every exam question provided, output tags for 'Topic' and 'Blooms Level' "
-        "(Remember, Understand, Apply, Analyze). Do NOT answer the question."
+        "For every exam question provided, output a JSON object with a 'questions' array. "
+        "Each item should have 'topic' and 'bloom_level' (Remember, Understand, Apply, Analyze). "
+        "Do NOT answer the question. You MUST output ONLY valid JSON."
     ),
-    output_key="tagged_questions",
-    after_agent_callback=suppress_output_callback
+    output_key="tagged_questions"
 )

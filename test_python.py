@@ -1,4 +1,4 @@
-import sys, asyncio, os, json
+import sys, asyncio, os, json, logging
 from pathlib import Path
 repo_root = Path('/home/amitdevx/Code/Professor_Profiler').resolve()
 if str(repo_root) not in sys.path:
@@ -6,6 +6,9 @@ if str(repo_root) not in sys.path:
 
 from dotenv import load_dotenv
 load_dotenv(repo_root / '.env')
+
+# Setup DEBUG logging to stdout
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
@@ -19,12 +22,9 @@ async def run_chat(query: str):
     runner = Runner(agent=root_agent, app_name="prof_cli", session_service=session_service, llm_provider=provider)
     
     final_response = ""
+    print("Starting runner.run_async...")
     async for event in runner.run_async("default_user", "cli_chat", genai_types.Content(role="user", parts=[genai_types.Part.from_text(text=query)])):
-        if type(event).__name__ == 'AgentCallEvent' and hasattr(event, 'agent_name'):
-             print(json.dumps({"type": "status", "agent": event.agent_name, "message": f"Calling agent {event.agent_name}..."}), flush=True)
-        elif type(event).__name__ == 'AgentResponseEvent' and hasattr(event, 'agent_name'):
-             print(json.dumps({"type": "status", "agent": event.agent_name, "message": f"Agent {event.agent_name} completed."}), flush=True)
-        
+        print("Received event:", event)
         if event.is_final_response():
             final_response = event.content.parts[0].text
             

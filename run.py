@@ -88,15 +88,29 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
     # Determine which agent to run
     agent_to_run = root_agent
     if agent_name != "all":
-        # Find sub-agent by name if specified
-        found = False
-        for sub in root_agent.sub_agents:
-            if sub.name.lower() == agent_name.lower():
-                agent_to_run = sub
-                found = True
-                break
-        if not found:
-            print(f"Warning: agent '{agent_name}' not found. Defaulting to orchestrator.")
+        name_map = {
+            "parser": "root",
+            "research": "taxonomist",
+            "analysis": "trend_spotter",
+            "recommendation": "strategist",
+            "taxonomist": "taxonomist",
+            "trend_spotter": "trend_spotter",
+            "recommend": "strategist",
+            "strategist": "strategist",
+        }
+        target_name = name_map.get(agent_name.lower(), agent_name.lower())
+        
+        if target_name == "root":
+            agent_to_run = root_agent
+        else:
+            found = False
+            for sub in root_agent.sub_agents:
+                if sub.name.lower() == target_name:
+                    agent_to_run = sub
+                    found = True
+                    break
+            if not found:
+                print(f"Warning: agent '{agent_name}' not found. Defaulting to orchestrator.", flush=True)
     
     # Initialize Runner
     runner = Runner(
@@ -130,16 +144,16 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
             )
         ):
             if not event.is_final_response():
-                print(f"[{event.agent_name}] processing...")
+                print(f"[{event.agent_name}] processing...", flush=True)
             else:
                 final_response = event.content.parts[0].text
 
         if final_response:
-            print("\n" + "="*80)
-            print("ANALYSIS REPORT GENERATED SUCCESSFULLY")
-            print("="*80)
-            print(final_response)
-            print("="*80)
+            print("\n" + "="*80, flush=True)
+            print("ANALYSIS REPORT GENERATED SUCCESSFULLY", flush=True)
+            print("="*80, flush=True)
+            print(final_response, flush=True)
+            print("="*80, flush=True)
             
             # Save the final report to output/reports/
             report_name = f"{Path(pdf_filename).stem}_analysis_report.md"
@@ -150,6 +164,26 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
             print(f"\nSaved report to: {report_path}")
             
             # Look for generated chart
+            import json
+            import re
+            
+            # Extract trend spotter JSON output
+            trend_match = re.search(r'\[trend_spotter Response\](.*?)\[strategist Response\]', final_response, re.DOTALL)
+            if trend_match:
+                try:
+                    trend_text = trend_match.group(1).strip()
+                    # Find the JSON block in the text
+                    json_start = trend_text.find('{')
+                    json_end = trend_text.rfind('}')
+                    if json_start != -1 and json_end != -1:
+                        stats_json = trend_text[json_start:json_end+1]
+                        stats = json.loads(stats_json)
+                        if "total_questions" in stats:
+                            from profiler_agent.tools import visualize_trends
+                            visualize_trends(stats)
+                except Exception as e:
+                    print(f"Failed to generate chart from stats: {e}")
+
             chart_folder = get_output_path("", "charts")
             charts = list(chart_folder.glob("*.png"))
             if charts:

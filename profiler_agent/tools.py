@@ -47,10 +47,59 @@ def read_pdf_content(file_path: str) -> dict:
     if not os.path.exists(file_path):
         return {"error": f"File not found: {file_path}"}
 
-    # Handle text files directly to prevent pypdf errors
-    if file_path.lower().endswith(('.txt', '.md', '.json', '.csv')):
+    # Determine file type
+    ext = os.path.splitext(file_path)[1].lower()
+
+    if ext == '.pdf':
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            reader = PdfReader(file_path)
+            text = ""
+            page_count = len(reader.pages)
+            has_text = False
+
+            for page_num, page in enumerate(reader.pages, 1):
+                page_text = page.extract_text() or ""
+                if page_text.strip():
+                    has_text = True
+                text += f"\n--- Page {page_num} ---\n{page_text}"
+
+            if not has_text:
+                return {
+                    "error": "The PDF does not contain any extractable text. It might be scanned or empty. Please provide a searchable (OCR-ed) PDF."
+                }
+
+            return {
+                "filename": os.path.basename(file_path),
+                "content": text,
+                "page_count": page_count,
+                "file_path": file_path
+            }
+        except Exception as e:
+            return {"error": f"Failed to read PDF: {str(e)}"}
+            
+    elif ext in ['.docx', '.doc']:
+        try:
+            import zipfile
+            import xml.etree.ElementTree as ET
+            with zipfile.ZipFile(file_path) as docx:
+                xml_content = docx.read('word/document.xml')
+                root = ET.fromstring(xml_content)
+                ns = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
+                text_elems = root.findall('.//w:t', ns)
+                content = "".join([elem.text for elem in text_elems if elem.text])
+            return {
+                "filename": os.path.basename(file_path),
+                "content": content,
+                "page_count": 1,
+                "file_path": file_path
+            }
+        except Exception as e:
+            return {"error": f"Failed to read Word document: {str(e)}"}
+            
+    else:
+        # Treat .txt, .md, .json, .csv, .py, .ts, .js and any other extension as UTF-8 text
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
             return {
                 "filename": os.path.basename(file_path),
@@ -60,32 +109,6 @@ def read_pdf_content(file_path: str) -> dict:
             }
         except Exception as e:
             return {"error": f"Failed to read text file: {str(e)}"}
-
-    try:
-        reader = PdfReader(file_path)
-        text = ""
-        page_count = len(reader.pages)
-        has_text = False
-
-        for page_num, page in enumerate(reader.pages, 1):
-            page_text = page.extract_text() or ""
-            if page_text.strip():
-                has_text = True
-            text += f"\n--- Page {page_num} ---\n{page_text}"
-
-        if not has_text:
-            return {
-                "error": "The PDF does not contain any extractable text. It might be scanned or empty. Please provide a searchable (OCR-ed) PDF."
-            }
-
-        return {
-            "filename": os.path.basename(file_path),
-            "content": text,
-            "page_count": page_count,
-            "file_path": file_path
-        }
-    except Exception as e:
-        return {"error": f"Failed to read PDF: {str(e)}"}
 
 
 def analyze_statistics(questions_data: str) -> dict:
@@ -110,7 +133,15 @@ def analyze_statistics(questions_data: str) -> dict:
                 if lines and lines[-1].startswith("```"):
                     lines = lines[:-1]
                 cleaned = "\n".join(lines).strip()
-            data = json.loads(cleaned)
+            try:
+                data = json.loads(cleaned)
+            except json.JSONDecodeError:
+                import ast
+                try:
+                    data = ast.literal_eval(cleaned)
+                except Exception:
+                    # Let the next block handle it or raise
+                    raise ValueError(f"Could not parse data as JSON or dict literal: {cleaned[:50]}...")
         else:
             data = questions_data
 
@@ -180,7 +211,24 @@ def visualize_trends(
 
         # Parse statistics
         if isinstance(statistics, str):
-            stats = json.loads(statistics)
+            cleaned_stats = statistics.strip()
+            # Remove markdown code block wrapping if present
+            if cleaned_stats.startswith("```"):
+                lines = cleaned_stats.splitlines()
+                if lines[0].startswith("```"):
+                    lines = lines[1:]
+                if lines and lines[-1].startswith("```"):
+                    lines = lines[:-1]
+                cleaned_stats = "\n".join(lines).strip()
+                
+            try:
+                stats = json.loads(cleaned_stats)
+            except json.JSONDecodeError:
+                import ast
+                try:
+                    stats = ast.literal_eval(cleaned_stats)
+                except Exception:
+                    raise ValueError(f"Could not parse statistics as JSON or dict literal: {cleaned_stats[:50]}...")
         else:
             stats = statistics
 

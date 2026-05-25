@@ -39,7 +39,8 @@ export class PythonRunner {
       const pythonExec = fs.existsSync(venvPython) ? venvPython : 'python3';
 
       const pythonScript = `
-import sys, asyncio, os, json
+import sys, asyncio, os, json, warnings
+warnings.filterwarnings("ignore")
 from pathlib import Path
 repo_root = Path('${repoRoot}').resolve()
 if str(repo_root) not in sys.path:
@@ -70,11 +71,12 @@ async def run_chat(query: str, agent_name: str, history: list):
     # Reconstruct history
     for idx, msg in enumerate(history):
         role = "user" if idx % 2 == 0 else "model"
-        await session_service.add_history(
+        await session_service.add_message(
             app_name="prof_cli",
             user_id="default_user",
             session_id="cli_chat",
-            turn=genai_types.Content(role=role, parts=[genai_types.Part.from_text(text=msg)])
+            role=role,
+            content=msg
         )
 
     runner = Runner(agent=agent, app_name="prof_cli", session_service=session_service, llm_provider=provider)
@@ -90,7 +92,9 @@ async def run_chat(query: str, agent_name: str, history: list):
     print("FINAL_RESPONSE_START")
     print(final_response)
 
-history_json = """${JSON.stringify(history)}"""
+import base64
+history_b64 = "${Buffer.from(JSON.stringify(history)).toString('base64')}"
+history_json = base64.b64decode(history_b64).decode('utf-8')
 asyncio.run(run_chat(sys.argv[1], sys.argv[2], json.loads(history_json)))
 `;
       this.childProcess = spawn(pythonExec, ['-c', pythonScript, finalPrompt, agentName], {

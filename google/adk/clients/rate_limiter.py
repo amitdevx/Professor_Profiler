@@ -29,4 +29,4 @@ class RateLimiter:
                     return
 
                 sleep_time = (1 - self.tokens) / self.refill_rate
-                await asyncio.sleep(sleep_time)
+                await asyncio.sleep(max(sleep_time, 0.01))

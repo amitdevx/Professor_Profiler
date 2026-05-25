@@ -11,6 +11,10 @@ import path from 'node:path';
 import fs from 'fs-extra';
 import boxen from 'boxen';
 import chalk from 'chalk';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(__dirname, '../../');
 
 /**
  * Result of a single diagnostic check.
@@ -76,7 +80,7 @@ function checkPython(): CheckResult {
  * Check if .venv exists in the parent directory.
  */
 function checkVenv(): CheckResult {
-  const venvPath = path.resolve(process.cwd(), '../.venv');
+  const venvPath = path.join(repoRoot, '.venv');
   const exists = fs.existsSync(venvPath);
 
   return {
@@ -91,7 +95,7 @@ function checkVenv(): CheckResult {
  * Check for API keys in .env file.
  */
 function checkApiKeys(): CheckResult {
-  const envPath = path.resolve(process.cwd(), '../.env');
+  const envPath = path.join(repoRoot, '.env');
 
   if (!fs.existsSync(envPath)) {
     return {
@@ -148,8 +152,8 @@ function checkTerminal(): CheckResult {
  * Check output directories.
  */
 function checkOutputDirs(): CheckResult {
-  const dirs = ['../output', '../output/reports', '../output/charts'];
-  const existing = dirs.filter((d) => fs.existsSync(path.resolve(process.cwd(), d)));
+  const dirs = ['output', 'output/reports', 'output/charts'].map(d => path.join(repoRoot, d));
+  const existing = dirs.filter((d) => fs.existsSync(d));
 
   if (existing.length === dirs.length) {
     return {

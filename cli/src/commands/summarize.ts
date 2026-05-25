@@ -24,7 +24,7 @@ export function registerSummarizeCommand(): Command {
       }
       
       console.log(chalk.yellow('Starting AI summarization...'));
-      const content = await fs.readFile(fileInfo.path, 'utf-8');
+      const content = await fileService.readFileText(fileInfo);
       const prompt = `Please summarize the following document:\n\n--- Contents of ${fileInfo.name} ---\n${content}`;
       await pythonRunner.runChatStream(prompt, 'summarizer');
     } catch (e: any) {

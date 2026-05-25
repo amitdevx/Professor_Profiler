@@ -16,7 +16,7 @@ professor_profiler_agent = Agent(
 2. Delegate to taxonomist sub-agent to classify questions by topic and Bloom's taxonomy
 3. Use analyze_statistics tool to compute frequency distributions
 4. Delegate to trend_spotter sub-agent to identify statistical shifts
-5. Use visualize_trends tool to create charts
+5. YOU MUST use visualize_trends tool to create and save charts. Do NOT skip this step!
 6. Delegate to strategist sub-agent to generate study recommendations
 
 Current date: {datetime.datetime.now().strftime('%Y-%m-%d')}
