@@ -35,7 +35,6 @@ def read_pdf_content(file_path: str) -> dict:
     # If path is relative (no directory separator), look in input/ folder
     path = Path(file_path)
     if not path.is_absolute() and not os.path.exists(file_path):
-        # Try looking in input directory
         input_file = get_input_path(file_path)
         if input_file.exists():
             file_path = str(input_file)
@@ -47,7 +46,6 @@ def read_pdf_content(file_path: str) -> dict:
     if not os.path.exists(file_path):
         return {"error": f"File not found: {file_path}"}
 
-    # Determine file type
     ext = os.path.splitext(file_path)[1].lower()
 
     if ext == '.pdf':
@@ -122,10 +120,8 @@ def analyze_statistics(questions_data: str) -> dict:
         Statistical analysis including frequency distributions
     """
     try:
-        # Parse input if it's a string
         if isinstance(questions_data, str):
             cleaned = questions_data.strip()
-            # Remove markdown code block wrapping if present
             if cleaned.startswith("```"):
                 lines = cleaned.splitlines()
                 if lines[0].startswith("```"):
@@ -140,12 +136,10 @@ def analyze_statistics(questions_data: str) -> dict:
                 try:
                     data = ast.literal_eval(cleaned)
                 except Exception:
-                    # Let the next block handle it or raise
                     raise ValueError(f"Could not parse data as JSON or dict literal: {cleaned[:50]}...")
         else:
             data = questions_data
 
-        # Extract topics and bloom levels
         topics = []
         bloom_levels = []
 
@@ -161,7 +155,6 @@ def analyze_statistics(questions_data: str) -> dict:
                 topics.append(q.get("topic", "Unknown"))
                 bloom_levels.append(q.get("bloom_level", "Unknown"))
 
-        # Calculate statistics
         topic_freq = Counter(topics)
         bloom_freq = Counter(bloom_levels)
 
@@ -205,14 +198,11 @@ def visualize_trends(
         return {"error": "matplotlib library is not installed"}
 
     try:
-        # Use output/charts directory if only filename provided
         if not os.path.dirname(output_path):
             output_path = str(get_output_path(output_path, "charts"))
 
-        # Parse statistics
         if isinstance(statistics, str):
             cleaned_stats = statistics.strip()
-            # Remove markdown code block wrapping if present
             if cleaned_stats.startswith("```"):
                 lines = cleaned_stats.splitlines()
                 if lines[0].startswith("```"):
@@ -232,7 +222,6 @@ def visualize_trends(
         else:
             stats = statistics
 
-        # Create figure with subplots
         fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
         # Plot 1: Topic Distribution
@@ -263,10 +252,8 @@ def visualize_trends(
 
         plt.tight_layout()
 
-        # Ensure output directory exists
         os.makedirs(os.path.dirname(output_path) if os.path.dirname(output_path) else ".", exist_ok=True)
 
-        # Save figure
         plt.savefig(output_path, dpi=150, bbox_inches='tight')
         plt.close()
 

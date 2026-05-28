@@ -95,7 +95,6 @@ export class AgentRenderer {
         console.log(`  ${message}`);
       }
 
-      // Show summary data if available
       if (result.data && typeof result.data === 'string') {
         console.log(chalk.dim(`     └─ ${result.data}`));
       }

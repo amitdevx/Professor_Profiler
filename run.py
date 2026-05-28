@@ -8,7 +8,6 @@ import sys
 import json
 from pathlib import Path
 
-# Ensure root is in sys.path
 repo_root = Path(__file__).resolve().parent
 if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
@@ -62,7 +61,6 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
         print(f"Targeting Agent: {agent_name}")
     print("="*80)
 
-    # Initialize directories and logging
     ensure_directories()
     setup_logging(level="INFO", structured=False, log_file="agent_run.log")
 
@@ -76,7 +74,6 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
     else:
         print(f"Using LLM Provider: {provider.upper()}")
 
-    # Initialize Session Service
     session_service = InMemorySessionService()
     session_id = f"session_{int(asyncio.get_event_loop().time())}"
     await session_service.create_session(
@@ -85,7 +82,6 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
         session_id=session_id
     )
 
-    # Determine which agent to run
     agent_to_run = root_agent
     if agent_name != "all":
         name_map = {
@@ -112,7 +108,6 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
             if not found:
                 print(f"Warning: agent '{agent_name}' not found. Defaulting to orchestrator.", flush=True)
     
-    # Initialize Runner
     runner = Runner(
         agent=agent_to_run,
         app_name="professor_profiler",
@@ -120,7 +115,6 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
         llm_provider=provider
     )
 
-    # Formulate prompt query based on agent
     if agent_name == "all":
         query = (
             f"Analyze the exam paper {pdf_filename}. Make sure to execute the entire workflow: "
@@ -155,7 +149,6 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
             print(final_response, flush=True)
             print("="*80, flush=True)
             
-            # Save the final report to output/reports/
             report_name = f"{Path(pdf_filename).stem}_analysis_report.md"
             report_path = get_output_path(report_name, "reports")
             with open(report_path, "w") as f:
@@ -163,16 +156,13 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
             
             print(f"\nSaved report to: {report_path}")
             
-            # Look for generated chart
             import json
             import re
             
-            # Extract trend spotter JSON output
             trend_match = re.search(r'\[trend_spotter Response\](.*?)\[strategist Response\]', final_response, re.DOTALL)
             if trend_match:
                 try:
                     trend_text = trend_match.group(1).strip()
-                    # Find the JSON block in the text
                     json_start = trend_text.find('{')
                     json_end = trend_text.rfind('}')
                     if json_start != -1 and json_end != -1:
@@ -189,7 +179,6 @@ async def run_analysis(pdf_filename: str, agent_name: str = "all"):
             if charts:
                 print(f"Saved charts to: {chart_folder}")
 
-            # Print NIM metrics summary if provider is nim
             if provider == "nim":
                 metrics = migration_metrics.snapshot()
                 print("\nNIM Metrics Summary:")
@@ -212,7 +201,6 @@ def main():
     print("="*80)
     print("This tool reverse-engineers exam papers to decode topic frequency and difficulty.")
     
-    # Check/generate PDFs
     pdf_files = generate_sample_exams_if_needed()
     if not pdf_files:
         print("Error: No PDFs available. Please place a PDF in the input directory and restart.")

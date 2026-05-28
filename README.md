@@ -37,7 +37,7 @@ flowchart TD
 
     subgraph Agent_Layer [" Agent Hierarchy"]
         Root[<b>ROOT AGENT</b><br><i>Llama 3.3 70B (NIM)</i><br>The Orchestrator]
-        
+
         subgraph Workers ["Specialized Sub-Agents"]
             Taxonomist[<b>Taxonomist</b><br><i>Llama 3.1 70B (NIM)</i><br>Topic & Bloom's Classification]
             Trend[<b>Trend Spotter</b><br><i>Llama 3.3 70B (NIM)</i><br>Statistical Analysis]
@@ -56,11 +56,11 @@ flowchart TD
     Runner <--> Session
     Runner <--> Memory
     Runner --> Root
-    
+
     Root --Delegates--> Taxonomist
     Root --Delegates--> Trend
     Root --Delegates--> Strat
-    
+
     Root --Calls--> Reader
     Root --Calls--> Plotter
     Trend --Calls--> Calc
@@ -102,78 +102,7 @@ The system splits the cognitive load across three distinct worker agents:
 
 ## Getting Started
 
-### Prerequisites
-1. **Python 3.10** or higher.
-2. **NVIDIA NIM API Key** (obtain from build.nvidia.com).
-3. *Optional:* Google Gemini API Key if enabling fallback.
-
-### Installation
-
-#### Linux / macOS
-```bash
-# 1. Clone the repository
-git clone https://github.com/uffamit/Professor_Profiler.git
-cd Professor_Profiler
-
-# 2. Create and activate a virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# 3. Install requirements
-pip install -r requirements.txt
-```
-
-#### Windows
-```powershell
-# 1. Clone the repository
-git clone https://github.com/uffamit/Professor_Profiler.git
-cd Professor_Profiler
-
-# 2. Create and activate a virtual environment
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-
-# 3. Install requirements
-pip install -r requirements.txt
-```
-
-### Configuration
-
-Create a `.env` file in the root directory.
-
-#### Linux / macOS Setup
-```bash
-cp .env.example .env
-```
-
-#### Windows Setup (Command Prompt)
-```cmd
-copy .env.example .env
-```
-
-#### Windows Setup (PowerShell)
-```powershell
-Copy-Item .env.example .env
-```
-
-Open the `.env` file and configure the settings:
-```ini
-# Provider Selection: nim or gemini
-LLM_PROVIDER=nim
-
-# NVIDIA NIM Configuration
-NIM_API_KEY=your_nvidia_api_key_here
-NIM_BASE_URL=https://integrate.api.nvidia.com/v1
-NIM_TIMEOUT=120
-NIM_CLASSIFIER_MODEL=meta/llama-3.1-70b-instruct
-NIM_ANALYZER_MODEL=meta/llama-3.3-70b-instruct
-
-# Optional Fallback to Gemini
-ENABLE_FALLBACK=true
-GOOGLE_API_KEY=your_google_gemini_key_here
-GEMINI_CLASSIFIER_MODEL=gemini-2.0-flash-exp
-GEMINI_ANALYZER_MODEL=gemini-2.0-pro-exp
-```
+For full instructions on setting up the core Python backend, configuring your API keys, and installing the optional interactive Node.js CLI, please see our dedicated [Installation Guide (INSTALL.md)](INSTALL.md).
 
 ---
 

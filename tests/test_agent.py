@@ -8,7 +8,6 @@ from pathlib import Path
 
 import pytest
 
-# Ensure repo root is on sys.path so running this script directly
 # (python tests/test_agent.py) can import local packages like `google.adk`.
 repo_root = Path(__file__).resolve().parent.parent
 if str(repo_root) not in sys.path:
@@ -45,7 +44,6 @@ async def test_session_service():
 
     session_service = InMemorySessionService()
 
-    # Create session
     session = await session_service.create_session(
         app_name="test_app",
         user_id="test_user",
@@ -55,7 +53,6 @@ async def test_session_service():
     assert session["session_id"] == "test_session"
     print("Success: Created session: {session_id}".format(session_id=session['session_id']))
 
-    # Add messages
     await session_service.add_message(
         app_name="test_app",
         user_id="test_user",
@@ -73,7 +70,6 @@ async def test_session_service():
     assert len(messages) == 1
     print("Success: Added and retrieved message")
 
-    # Update context
     await session_service.update_context(
         app_name="test_app",
         user_id="test_user",
@@ -101,18 +97,15 @@ async def test_tools():
     from profiler_agent.tools import read_pdf_content, analyze_statistics
     import json
 
-    # Ensure mock file exists
     os.makedirs("tests/sample_data", exist_ok=True)
     test_file = "tests/sample_data/test.pdf"
     with open(test_file, "w") as f:
         f.write("mock pdf content")
 
-    # Test PDF tool
     result = read_pdf_content(test_file)
     assert "filename" in result or "error" in result
     print("Success: PDF tool executed: {filename}".format(filename=result.get('filename', 'error')))
 
-    # Test statistics tool
     mock_data = {
         "questions": [
             {"topic": "Math", "bloom_level": "Apply"},
@@ -133,7 +126,6 @@ async def test_runner_execution():
     print("TEST 4: Runner Execution")
     print("-" * 60)
 
-    # Setup
     setup_logging(level="INFO")
     session_service = InMemorySessionService()
     await session_service.create_session(
@@ -148,7 +140,6 @@ async def test_runner_execution():
         session_service=session_service
     )
 
-    # Ensure mock file exists
     os.makedirs("tests/sample_data", exist_ok=True)
     with open("tests/sample_data/physics_2024.pdf", "w") as f:
         f.write("mock content")
@@ -184,7 +175,6 @@ async def test_memory_bank():
 
     memory_bank = MemoryBank(storage_path="test_memory.json")
 
-    # Add memory
     memory_id = memory_bank.add_memory(
         user_id="test_user",
         memory_type="test",
@@ -194,17 +184,14 @@ async def test_memory_bank():
 
     print("Success: Added memory: {memory_id}".format(memory_id=memory_id))
 
-    # Retrieve memory
     memories = memory_bank.get_memories("test_user")
     assert len(memories) > 0
     print("Success: Retrieved {count} memories".format(count=len(memories)))
 
-    # Search
     results = memory_bank.search_memories("test_user", "value")
     assert len(results) > 0
     print("Success: Search found {count} results".format(count=len(results)))
 
-    # Cleanup
     if os.path.exists("test_memory.json"):
         os.remove("test_memory.json")
     print()

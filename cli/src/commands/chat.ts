@@ -41,7 +41,6 @@ async function* mockStreamResponse(message: string): AsyncGenerator<StreamChunk,
   // Yield status chunk first
   yield { token: 'Thinking...', agentName: 'AI', timestamp: new Date(), type: 'status' as const };
 
-  // Simulate processing delay
   await new Promise((r) => setTimeout(r, 500));
 
   // Stream the response word-by-word for natural feel
@@ -85,7 +84,6 @@ export function createChatCommand(): Command {
 
       const promptText = chalk.hex('#f72585').bold('  prof › ');
 
-      // Main REPL loop
       let running = true;
       while (running) {
         const userInput = await customReplPrompt(promptText);
@@ -98,7 +96,6 @@ export function createChatCommand(): Command {
 
         if (!trimmed) continue;
 
-        // Handle slash commands
         if (trimmed.startsWith('/')) {
           switch (trimmed.toLowerCase()) {
             case '/exit':

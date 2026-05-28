@@ -25,7 +25,6 @@ import sys
 import json
 from pathlib import Path
 
-# Add repo root to path
 repo_root = Path(__file__).resolve().parent
 if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
@@ -45,13 +44,10 @@ async def demo_basic_workflow():
     print("DEMO 1: Basic Agent Workflow")
     print("="*80)
 
-    # Ensure directories exist
     ensure_directories()
 
-    # Setup logging with file output
     logger = setup_logging(level="INFO", structured=False, log_file="demo_run.log")
 
-    # Initialize session service
     session_service = InMemorySessionService()
     await session_service.create_session(
         app_name="professor_profiler",
@@ -59,21 +55,18 @@ async def demo_basic_workflow():
         session_id="demo_session_1"
     )
 
-    # Initialize runner
     runner = Runner(
         agent=root_agent,
         app_name="professor_profiler",
         session_service=session_service
     )
 
-    # Create sample PDF in input folder if doesn't exist
     sample_pdf = get_input_path("physics_2024.pdf")
     if not sample_pdf.exists():
         print(f"\nWarning: Creating mock PDF at {sample_pdf}")
         with open(sample_pdf, "w") as f:
             f.write("Mock PDF content for testing")
 
-    # Run agent with query (use just the filename, tool will look in input directory)
     query = "Analyze the exam paper physics_2024.pdf and tell me what topics to focus on."
     print(f"\nQuery: {query}")
     print("\nAgent Response:")
@@ -94,7 +87,6 @@ async def demo_basic_workflow():
             print(f"\n{response_text}")
             log_agent_event(logger, "query_complete", "professor_profiler_agent")
 
-    # Show session stats
     stats = session_service.get_stats()
     print(f"\nSession Stats: {json.dumps(stats, indent=2)}")
 
@@ -109,7 +101,6 @@ async def demo_memory_bank():
     memory_bank = MemoryBank()
     user_id = "demo_user"
 
-    # Add memories
     print("\nAdding memories to memory bank...")
 
     memory_bank.add_memory(
@@ -147,7 +138,6 @@ async def demo_memory_bank():
         tags=["preferences", "learning_style"]
     )
 
-    # Retrieve memories
     print("\nRetrieving memories...")
     memories = memory_bank.get_memories(user_id, limit=10)
     for mem in memories:
@@ -156,7 +146,6 @@ async def demo_memory_bank():
             content=json.dumps(mem['content'], indent=2)
         ))
 
-    # Search memories
     print("\nSearching for 'quantum'...")
     results = memory_bank.search_memories(user_id, "quantum")
     for result in results:
@@ -165,7 +154,6 @@ async def demo_memory_bank():
             content=result['content']
         ))
 
-    # Get summary
     summary = memory_bank.get_summary(user_id)
     print("\nMemory Summary: {summary}".format(summary=json.dumps(summary, indent=2)))
 
@@ -173,7 +161,6 @@ async def demo_memory_bank():
     context = memory_bank.compact_context(user_id, max_tokens=500)
     print("\nCompacted Context (for LLM):\n{context}".format(context=context))
 
-    # Cleanup - clear user memories instead of removing file
     # (file is shared in output/memory_bank.json)
     memory_bank.clear_user_memories(user_id)
 
@@ -184,14 +171,11 @@ async def demo_observability():
     print("DEMO 3: Observability (Logging, Tracing, Metrics)")
     print("="*80)
 
-    # Setup structured logging (logger returned for potential future use)
     setup_logging(level="INFO", structured=True)
 
-    # Start trace
     print("\nStarting trace for agent operation...")
     trace_id = tracer.start_trace("demo_agent_execution", metadata={"user": "demo"})
 
-    # Simulate agent operations
     import time
 
     print("  Simulating PDF ingestion...")
@@ -212,11 +196,9 @@ async def demo_observability():
     metrics.increment("trends.analyzed")
     metrics.histogram("analysis.duration_ms", 200.7)
 
-    # End trace
     trace_data = tracer.end_trace(trace_id)
     print("\nTrace Data:\n{trace}".format(trace=json.dumps(trace_data, indent=2)))
 
-    # Get metrics
     metrics_data = metrics.get_metrics()
     print("\nMetrics:\n{metrics}".format(metrics=json.dumps(metrics_data, indent=2)))
 
@@ -247,7 +229,6 @@ async def demo_tools():
     else:
         print("  No exams found in the input directory")
 
-    # Create mock PDF in input folder
     test_pdf = get_input_path("demo_exam.pdf")
     if not test_pdf.exists():
         print("\nCreating mock PDF at {path}...".format(path=test_pdf))
@@ -258,7 +239,6 @@ async def demo_tools():
     result = read_pdf_content("demo_exam.pdf")  # Just use filename
     print("  Extracted content from: {filename}".format(filename=result.get('filename', 'unknown')))
 
-    # Test statistics tool
     print("\nTesting analyze_statistics tool...")
     mock_questions = {
         "questions": [
@@ -273,7 +253,6 @@ async def demo_tools():
     stats = analyze_statistics(json.dumps(mock_questions))
     print("  Statistics:\n{stats}".format(stats=json.dumps(stats, indent=4)))
 
-    # Test visualization tool (output will go to output/charts/)
     print("\nTesting visualize_trends tool...")
     chart_path = "demo_chart.png"  # Will be saved to output/charts/
     viz_result = visualize_trends(json.dumps(stats), chart_path)
@@ -329,7 +308,6 @@ async def main():
     print("  Yes: Observability (Logging, Tracing, Metrics)")
     print("  Yes: Gemini API integration (if API key provided)")
 
-    # Show folder structure
     print("\nProject Structure:")
     print("  input/  - Place your exam PDFs here")
     print("  output/ - All results saved here")
@@ -337,10 +315,8 @@ async def main():
     print("     ├── logs/    - Log files")
     print("     └── reports/ - Analysis reports")
 
-    # Ensure directories exist
     ensure_directories()
 
-    # Check for input files
     input_files = list_input_files()
     print("\nFound {count} PDF file(s) in the input directory".format(count=len(input_files)))
     if input_files:
@@ -349,7 +325,6 @@ async def main():
         if len(input_files) > 3:
             print("   ... and {count} more".format(count=len(input_files) - 3))
 
-    # Check for API key
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
         print("\nWarning: GOOGLE_API_KEY not set. Agent will use mock responses.")
@@ -358,7 +333,6 @@ async def main():
         print("\nGOOGLE_API_KEY found (length: {length})".format(length=len(api_key)))
 
     try:
-        # Run demos
         await demo_multi_agent()
         await demo_tools()
         await demo_observability()

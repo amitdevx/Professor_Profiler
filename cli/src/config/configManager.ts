@@ -74,7 +74,6 @@ export class ConfigManager {
   private initialized = false;
 
   constructor() {
-    // Start with validated defaults
     this.config = CLIConfigSchema.parse({});
   }
 

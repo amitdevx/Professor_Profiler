@@ -75,7 +75,6 @@ export class CacheManager {
     try {
       fs.writeJsonSync(CACHE_FILE, Object.fromEntries(this.cache), { spaces: 2 });
     } catch (e) {
-      // Ignore
     }
   }
 }

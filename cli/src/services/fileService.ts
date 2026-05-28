@@ -89,7 +89,6 @@ export class FileService {
    * @returns An object with `valid` (boolean) and optional `error` message.
    */
   validateFile(fileInfo: FileInfo): { valid: boolean; error?: string } {
-    // Check existence
     if (!fs.existsSync(fileInfo.path)) {
       return {
         valid: false,
@@ -97,7 +96,6 @@ export class FileService {
       };
     }
 
-    // Check it's actually a file (not directory)
     const stat = fs.statSync(fileInfo.path);
     if (!stat.isFile()) {
       return {
@@ -106,7 +104,6 @@ export class FileService {
       };
     }
 
-    // Check extension
     const ext = path.extname(fileInfo.path).toLowerCase();
     if (!SUPPORTED_EXTENSIONS.has(ext)) {
       const supported = [...SUPPORTED_EXTENSIONS].join(', ');
@@ -116,7 +113,6 @@ export class FileService {
       };
     }
 
-    // Check file is not empty
     if (stat.size === 0) {
       return {
         valid: false,
@@ -142,7 +138,6 @@ export class FileService {
   async copyToProcessing(fileInfo: FileInfo, destDir: string): Promise<string> {
     const resolvedDest = path.resolve(process.cwd(), destDir);
 
-    // Ensure destination directory exists
     await fs.ensureDir(resolvedDest);
 
     const destPath = path.join(resolvedDest, fileInfo.name);

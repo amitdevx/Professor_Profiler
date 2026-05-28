@@ -14,14 +14,12 @@ export async function customReplPrompt(promptText: string): Promise<string | nul
     let showingSuggestions = false;
 
     if (!stdin.isTTY) {
-       // Fallback for non-TTY (piped inputs/tests)
        let buffer = '';
        stdin.on('data', (d) => buffer += d.toString());
        stdin.on('end', () => resolve(buffer.trim()));
        return;
     }
 
-    // setup raw mode
     stdin.setRawMode(true);
     stdin.resume();
     stdin.setEncoding('utf8');
@@ -50,7 +48,6 @@ export async function customReplPrompt(promptText: string): Promise<string | nul
             });
           }
         } catch {
-          // ignore
         }
       }
       showingSuggestions = suggestions.length > 0;
@@ -58,7 +55,6 @@ export async function customReplPrompt(promptText: string): Promise<string | nul
     };
 
     const render = () => {
-      // Clear line and rewrite
       stdout.write('\x1b[2K\x1b[0G');
       stdout.write(promptText + line);
 
@@ -190,7 +186,6 @@ export async function customReplPrompt(promptText: string): Promise<string | nul
         updateSuggestions();
         render();
       } else if (key === '\x1b[F' || key === '\x1b[4~' || key === '\x1bOF') {
-        // End
         cursor = line.length;
         updateSuggestions();
         render();

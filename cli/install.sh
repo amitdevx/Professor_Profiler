@@ -23,11 +23,11 @@ npm install
 # Build
 npm run build
 
-# Link globally
-npm link
+# Install globally
+npm run install:global
 
-echo -e "${GREEN}✓ Professor Profiler CLI installed successfully!${NC}"
-echo -e "${GREEN}✓ You can now use 'prof' from anywhere.${NC}"
+echo -e "${GREEN} Professor Profiler CLI installed successfully!${NC}"
+echo -e "${GREEN} You can now use 'prof' from anywhere.${NC}"
 echo ""
 echo -e "${BLUE}To enable autocomplete in your shell, add this to your ~/.bashrc or ~/.zshrc:${NC}"
 echo "    eval \"\$(prof completion)\""

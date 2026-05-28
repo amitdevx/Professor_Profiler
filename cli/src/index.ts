@@ -28,7 +28,6 @@ async function bootstrap() {
       configManager.set('theme', opts.theme);
     }
     
-    // Show banner only for primary commands if not explicitly disabled
     if (opts.banner !== false && ['analyze', 'chat'].includes(actionCommand.name())) {
       await showBanner(configManager.get('theme'));
     }
@@ -61,7 +60,6 @@ async function bootstrap() {
     process.exit(1);
   });
 
-  // Parse arguments
   if (process.argv.length <= 2) {
     await showBanner(configManager.get('theme'));
     program.help();

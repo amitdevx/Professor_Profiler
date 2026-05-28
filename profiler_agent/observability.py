@@ -26,7 +26,6 @@ class StructuredFormatter(logging.Formatter):
             "line": record.lineno
         }
 
-        # Add extra fields if present
         if hasattr(record, "trace_id"):
             log_data["trace_id"] = record.trace_id
         if hasattr(record, "agent_name"):
@@ -34,7 +33,6 @@ class StructuredFormatter(logging.Formatter):
         if hasattr(record, "duration_ms"):
             log_data["duration_ms"] = record.duration_ms
 
-        # Add exception info if present
         if record.exc_info:
             log_data["exception"] = self.formatException(record.exc_info)
 
@@ -52,19 +50,15 @@ def setup_logging(level: str = "INFO", structured: bool = False, log_file: Optio
     """
     log_level = getattr(logging, level.upper(), logging.INFO)
 
-    # Create logger
     logger = logging.getLogger()
     logger.setLevel(log_level)
 
-    # Remove existing handlers
     for handler in logger.handlers[:]:
         logger.removeHandler(handler)
 
-    # Create console handler
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.WARNING)
 
-    # Set formatter
     if structured:
         formatter = StructuredFormatter()
     else:
@@ -76,7 +70,6 @@ def setup_logging(level: str = "INFO", structured: bool = False, log_file: Optio
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
-    # Add file handler if requested
     if log_file:
         log_path = get_output_path(log_file, "logs")
         file_handler = logging.FileHandler(str(log_path))
@@ -183,7 +176,6 @@ class MetricsCollector:
     def get_metrics(self) -> Dict[str, Any]:
         """Get all metrics."""
         with self._lock:
-            # Calculate histogram statistics
             histogram_stats = {}
             for key, values in self._histograms.items():
                 if values:
@@ -324,7 +316,6 @@ def trace_operation(operation_name: str):
             finally:
                 tracer.end_trace(trace_id)
 
-        # Return appropriate wrapper based on function type
         import asyncio
         if asyncio.iscoroutinefunction(func):
             return async_wrapper

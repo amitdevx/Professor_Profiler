@@ -20,13 +20,11 @@ from google.adk.sessions import InMemorySessionService
 from google.genai import types as genai_types
 from profiler_agent.agent import root_agent
 
-
 TASKS = [
     "Classify these questions by Bloom's level: Explain inertia. Solve a circuit.",
     "Analyze exam trends from these summarized topic counts.",
     "Generate study recommendations from a short trend report.",
 ]
-
 
 async def benchmark_provider(provider: str, task: str, iterations: int = 3):
     os.environ["LLM_PROVIDER"] = provider
@@ -66,14 +64,12 @@ async def benchmark_provider(provider: str, task: str, iterations: int = 3):
         "response_preview": last_response[:120],
     }
 
-
 async def main():
     results = []
     for task in TASKS:
         for provider in ("gemini", "nim"):
             results.append(await benchmark_provider(provider, task))
     print(json.dumps(results, indent=2))
-
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -13,7 +13,7 @@ Place your exam/question paper PDF files here for analysis.
    ```bash
    python demo.py
    ```
-   
+
    Or use the filename directly in your queries:
    ```python
    query = "Analyze physics_2024.pdf and identify key topics"

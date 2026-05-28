@@ -82,5 +82,4 @@ def list_input_files(extension: str = ".pdf") -> list:
     return list(INPUT_DIR.glob(f"*{extension}"))
 
 
-# Ensure directories exist on import
 ensure_directories()

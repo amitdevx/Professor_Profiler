@@ -95,21 +95,17 @@ class MemoryBank:
         """
         user_memories = self.memories.get(user_id, [])
 
-        # Filter by type
         if memory_type:
             user_memories = [m for m in user_memories if m["type"] == memory_type]
 
-        # Filter by tags
         if tags:
             user_memories = [
                 m for m in user_memories
                 if all(tag in m.get("tags", []) for tag in tags)
             ]
 
-        # Sort by most recent and update access count
         user_memories.sort(key=lambda m: m["created_at"], reverse=True)
 
-        # Update access count for returned memories
         for memory in user_memories[:limit]:
             memory["access_count"] += 1
             memory["last_accessed"] = datetime.now().isoformat()
@@ -145,11 +141,9 @@ class MemoryBank:
             tags_str = " ".join(memory.get("tags", [])).lower()
 
             if query_lower in content_str or query_lower in tags_str:
-                # Calculate simple relevance score
                 score = content_str.count(query_lower) + tags_str.count(query_lower) * 2
                 matches.append((score, memory))
 
-        # Sort by relevance
         matches.sort(key=lambda x: x[0], reverse=True)
 
         return [m for _, m in matches[:limit]]
@@ -232,11 +226,9 @@ class MemoryBank:
         """
         user_memories = self.get_memories(user_id, limit=20)
 
-        # Filter by type if specified
         if memory_types:
             user_memories = [m for m in user_memories if m["type"] in memory_types]
 
-        # Build context string
         context_parts = ["Historical Context:"]
         current_length = len(context_parts[0])
         max_chars = max_tokens * 4  # Rough estimate

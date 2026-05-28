@@ -18,11 +18,9 @@ except ImportError:
 
 from pathlib import Path
 
-# Import path utilities
 import sys
 sys.path.insert(0, str(Path(__file__).parent))
 from profiler_agent.paths import get_input_path, ensure_directories
-
 
 SAMPLE_EXAMS = {
     "physics_2024_midterm.pdf": {
@@ -72,12 +70,10 @@ SAMPLE_EXAMS = {
     },
 }
 
-
 def create_sample_pdf(filename: str, exam_data: dict):
     """Create a sample exam PDF with the given questions."""
     filepath = str(get_input_path(filename))  # Convert Path to string
 
-    # Create PDF document
     doc = SimpleDocTemplate(
         filepath,
         pagesize=letter,
@@ -87,10 +83,8 @@ def create_sample_pdf(filename: str, exam_data: dict):
         bottomMargin=18
     )
 
-    # Container for the 'Flowable' objects
     elements = []
 
-    # Define styles
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
         'CustomTitle',
@@ -109,12 +103,10 @@ def create_sample_pdf(filename: str, exam_data: dict):
         leftIndent=20
     )
 
-    # Add title
     title = Paragraph(exam_data["title"], title_style)
     elements.append(title)
     elements.append(Spacer(1, 0.2*inch))
 
-    # Add instructions
     instructions = Paragraph(
         "<b>Instructions:</b> Answer all questions. Show all work for calculation problems. "
         "Total time: 90 minutes. Good luck!",
@@ -123,13 +115,11 @@ def create_sample_pdf(filename: str, exam_data: dict):
     elements.append(instructions)
     elements.append(Spacer(1, 0.3*inch))
 
-    # Add questions
     for question_text, bloom_level in exam_data["questions"]:
         question = Paragraph(question_text, question_style)
         elements.append(question)
         elements.append(Spacer(1, 0.15*inch))
 
-    # Add footer
     elements.append(Spacer(1, 0.5*inch))
     footer = Paragraph(
         "<i>This is a sample exam generated for testing purposes. "
@@ -138,22 +128,18 @@ def create_sample_pdf(filename: str, exam_data: dict):
     )
     elements.append(footer)
 
-    # Build PDF
     doc.build(elements)
-    print("✓ Created {filename}".format(filename=filename))
-
+    print(" Created {filename}".format(filename=filename))
 
 def main():
     """Generate all sample exam PDFs."""
     print("Generating sample exam PDFs...\n")
 
-    # Check if reportlab is available
     if not REPORTLAB_AVAILABLE:
         print("ERROR: reportlab is required to generate sample PDFs")
         print("Install it with: pip install reportlab")
         return 1
 
-    # Ensure input directory exists
     ensure_directories()
 
     # Generate each exam
@@ -161,15 +147,14 @@ def main():
         try:
             create_sample_pdf(filename, exam_data)
         except Exception as e:
-            print("✗ Failed to create {filename}: {error}".format(
+            print(" Failed to create {filename}: {error}".format(
                 filename=filename, error=e))
 
-    print("\n✓ Successfully generated {count} sample exam PDFs".format(
+    print("\n Successfully generated {count} sample exam PDFs".format(
         count=len(SAMPLE_EXAMS)))
-    print("✓ Files saved to: {path}".format(path=get_input_path('')))
+    print(" Files saved to: {path}".format(path=get_input_path('')))
     print("\nYou can now run: python demo.py")
     return 0
-
 
 if __name__ == "__main__":
     exit(main())

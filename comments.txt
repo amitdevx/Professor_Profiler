@@ -1,0 +1,571 @@
+./demo.py:12: # Place your exam PDFs in the input directory
+./demo.py:16: # Results will be saved to output/ folder:
+./demo.py:17: # - output/charts/ - Visualization charts
+./demo.py:18: # - output/logs/ - Log files
+./demo.py:19: # - output/reports/ - Analysis reports
+./demo.py:28: # Add repo root to path
+./demo.py:47: # Ensure directories exist
+./demo.py:50: # Setup logging with file output
+./demo.py:53: # Initialize session service
+./demo.py:61: # Initialize runner
+./demo.py:68: # Create sample PDF in input folder if doesn't exist
+./demo.py:75: # Run agent with query (use just the filename, tool will look in input directory)
+./demo.py:96: # Show session stats
+./demo.py:106: # Memory bank will automatically save to output/memory_bank.json
+./demo.py:110: # Add memories
+./demo.py:148: # Retrieve memories
+./demo.py:157: # Search memories
+./demo.py:166: # Get summary
+./demo.py:170: # Compact context for LLM
+./demo.py:174: # Cleanup - clear user memories instead of removing file
+./demo.py:175: # (file is shared in output/memory_bank.json)
+./demo.py:184: # Setup structured logging (logger returned for potential future use)
+./demo.py:187: # Start trace
+./demo.py:191: # Simulate agent operations
+./demo.py:212: # End trace
+./demo.py:216: # Get metrics
+./demo.py:220: # Reset for clean slate
+./demo.py:236: # List available exams
+./demo.py:246: # Create mock PDF in input folder
+./demo.py:257: # Test statistics tool
+./demo.py:272: # Test visualization tool (output will go to output/charts/)
+./demo.py:326: # Show folder structure
+./demo.py:334: # Ensure directories exist
+./demo.py:337: # Check for input files
+./demo.py:346: # Check for API key
+./demo.py:355: # Run demos
+./run.py:11: # Ensure root is in sys.path
+./run.py:62: # Initialize directories and logging
+./run.py:65: # Verify LLM provider configuration
+./run.py:75: # Initialize Session Service
+./run.py:84: # Determine which agent to run
+./run.py:111: # Initialize Runner
+./run.py:119: # Formulate prompt query based on agent
+./run.py:154: # Save the final report directly to output path
+./run.py:162: # Look for generated chart
+./run.py:166: # Extract trend spotter JSON output
+./run.py:171: # Find the JSON block in the text
+./run.py:188: # Print NIM metrics summary if provider is nim
+./run.py:209: # Check/generate PDFs
+./detect_emojis.py:6: # Match a wide range of emojis and symbols
+./detect_emojis.py:7: # Exclude basic ASCII and common Latin characters
+./detect_emojis.py:25: # Exclude directories
+./scripts/create_sample_exams.py:21: # Import path utilities
+./scripts/create_sample_exams.py:78: # Create PDF document
+./scripts/create_sample_exams.py:88: # Container for the 'Flowable' objects
+./scripts/create_sample_exams.py:91: # Define styles
+./scripts/create_sample_exams.py:110: # Add title
+./scripts/create_sample_exams.py:115: # Add instructions
+./scripts/create_sample_exams.py:124: # Add questions
+./scripts/create_sample_exams.py:130: # Add footer
+./scripts/create_sample_exams.py:139: # Build PDF
+./scripts/create_sample_exams.py:147: # Check if reportlab is available
+./scripts/create_sample_exams.py:153: # Ensure input directory exists
+./scripts/create_sample_exams.py:156: # Generate each exam
+./scripts/sanitization/sanitize_repo.py:4: # Extensive emoji and decorative unicode pattern
+./scripts/sanitization/sanitize_repo.py:22: # We also want to replace thick box-drawing and excessive dividers with minimal ascii
+./scripts/sanitization/sanitize_repo.py:31: # 1. Strip emojis and decorative unicode
+./scripts/sanitization/sanitize_repo.py:36: # 2. Cleanup banner boxen borders/decorations in typescript if any specific known strings
+./scripts/sanitization/sanitize_repo.py:37: # Replace unicode borders with plain ASCII where obvious
+./scripts/sanitization/sanitize_repo.py:42: # We will do more specific comment cleanup manually or via targeted regex.
+./scripts/sanitization/sanitize_repo.py:43: # But let's aggressively remove empty lines that result from stripping out emoji-only lines
+./scripts/sanitization/sanitize_repo.py:52: # Exclude directories
+./scripts/sanitization/verify_emojis.py:5: # Unicode ranges corresponding to emojis and decorative characters
+./profiler_agent/tools.py:34: # If path is relative (no directory separator), look in input/ folder
+./profiler_agent/tools.py:37: # Try looking in input directory
+./profiler_agent/tools.py:49: # Determine file type
+./profiler_agent/tools.py:99: # Treat .txt, .md, .json, .csv, .py, .ts, .js and any other extension as UTF-8 text
+./profiler_agent/tools.py:123: # Parse input if it's a string
+./profiler_agent/tools.py:126: # Remove markdown code block wrapping if present
+./profiler_agent/tools.py:141: # Let the next block handle it or raise
+./profiler_agent/tools.py:146: # Extract topics and bloom levels
+./profiler_agent/tools.py:162: # Calculate statistics
+./profiler_agent/tools.py:205: # Use output directory directly if only filename provided
+./profiler_agent/tools.py:209: # Parse statistics
+./profiler_agent/tools.py:212: # Remove markdown code block wrapping if present
+./profiler_agent/tools.py:232: # Create figure with subplots
+./profiler_agent/tools.py:235: # Plot 1: Topic Distribution
+./profiler_agent/tools.py:250: # Plot 2: Bloom's Taxonomy Distribution
+./profiler_agent/tools.py:263: # Ensure output directory exists
+./profiler_agent/tools.py:266: # Save figure
+./profiler_agent/tools.py:341: # Use get_output_path to dynamically resolve to the current output directory
+./profiler_agent/tools.py:344: # Ensure parent directories exist
+./profiler_agent/memory.py:15: # Default to output directory
+./profiler_agent/memory.py:97: # Filter by type
+./profiler_agent/memory.py:101: # Filter by tags
+./profiler_agent/memory.py:108: # Sort by most recent and update access count
+./profiler_agent/memory.py:111: # Update access count for returned memories
+./profiler_agent/memory.py:140: # Simple text-based search
+./profiler_agent/memory.py:147: # Calculate simple relevance score
+./profiler_agent/memory.py:151: # Sort by relevance
+./profiler_agent/memory.py:234: # Filter by type if specified
+./profiler_agent/memory.py:238: # Build context string
+./profiler_agent/observability.py:13: # Configure structured logging
+./profiler_agent/observability.py:28: # Add extra fields if present
+./profiler_agent/observability.py:36: # Add exception info if present
+./profiler_agent/observability.py:53: # Create logger
+./profiler_agent/observability.py:57: # Remove existing handlers
+./profiler_agent/observability.py:61: # Create console handler
+./profiler_agent/observability.py:65: # Set formatter
+./profiler_agent/observability.py:77: # Add file handler if requested
+./profiler_agent/observability.py:182: # Calculate histogram statistics
+./profiler_agent/observability.py:208: # Global instances
+./profiler_agent/observability.py:318: # Return appropriate wrapper based on function type
+./profiler_agent/config.py:17: # If Application Default Credentials are not available (e.g. in CI/local)
+./profiler_agent/config.py:18: # fall back to the env var or a sensible default so importing this module
+./profiler_agent/config.py:19: # doesn't raise. Tests can override `GOOGLE_CLOUD_PROJECT` if needed.
+./profiler_agent/paths.py:4: # Project root directory
+./profiler_agent/paths.py:9: # Output directories
+./profiler_agent/paths.py:45: # Lazily create the output directory
+./profiler_agent/sub_agents/trend_spotter.py:13: # We got the statistics! Generate chart.
+./tests/test_python.py:10: # Setup DEBUG logging to stdout
+./tests/test_agent.py:11: # Ensure repo root is on sys.path so running this script directly
+./tests/test_agent.py:12: # (python tests/test_agent.py) can import local packages like `google.adk`.
+./tests/test_agent.py:46: # Create session
+./tests/test_agent.py:56: # Add messages
+./tests/test_agent.py:74: # Update context
+./tests/test_agent.py:101: # Ensure mock file exists
+./tests/test_agent.py:107: # Test PDF tool
+./tests/test_agent.py:112: # Test statistics tool
+./tests/test_agent.py:132: # Setup
+./tests/test_agent.py:147: # Ensure mock file exists
+./tests/test_agent.py:182: # Add memory
+./tests/test_agent.py:192: # Retrieve memory
+./tests/test_agent.py:197: # Search
+./tests/test_agent.py:202: # Cleanup
+./cli/src/index.ts:21: // Register all dynamically loaded commands
+./cli/src/index.ts:24: // Hook into command execution
+./cli/src/index.ts:31: // Show banner only for primary commands if not explicitly disabled
+./cli/src/index.ts:53: // Global error handling
+./cli/src/index.ts:64: // Parse arguments
+./cli/src/state/stateManager.ts:8: /** (Block comment)
+./cli/src/state/stateManager.ts:76: // Ignore errors saving history
+./cli/src/commands/doctor.ts:1: /** (Block comment)
+./cli/src/commands/doctor.ts:19: /** (Block comment)
+./cli/src/commands/doctor.ts:23: /** Check display label. */ (Block comment)
+./cli/src/commands/doctor.ts:25: /** Whether the check passed. */ (Block comment)
+./cli/src/commands/doctor.ts:27: /** Detailed message. */ (Block comment)
+./cli/src/commands/doctor.ts:29: /** Severity: pass, fail, or warn. */ (Block comment)
+./cli/src/commands/doctor.ts:33: /** (Block comment)
+./cli/src/commands/doctor.ts:38: /** (Block comment)
+./cli/src/commands/doctor.ts:47: /** (Block comment)
+./cli/src/commands/doctor.ts:62: /** (Block comment)
+./cli/src/commands/doctor.ts:79: /** (Block comment)
+./cli/src/commands/doctor.ts:94: /** (Block comment)
+./cli/src/commands/doctor.ts:130: /** (Block comment)
+./cli/src/commands/doctor.ts:151: /** (Block comment)
+./cli/src/commands/doctor.ts:175: /** (Block comment)
+./cli/src/commands/doctor.ts:187: /** (Block comment)
+./cli/src/commands/doctor.ts:222: // Summary card
+./cli/src/commands/analyze.ts:1: /** (Block comment)
+./cli/src/commands/analyze.ts:23: /** (Block comment)
+./cli/src/commands/analyze.ts:39: // If Commander places the options object in agentArg because it's missing, handle it
+./cli/src/commands/analyze.ts:47: // Step 1: Resolve file path
+./cli/src/commands/analyze.ts:53: // Step 2: Validate file
+./cli/src/commands/analyze.ts:65: // Step 3: File is analyzed directly from its absolute path
+./cli/src/commands/analyze.ts:66: // Set the output directory environment variable so backend uses it
+./cli/src/commands/analyze.ts:71: // Step 4: Validate API Keys before running backend
+./cli/src/commands/analyze.ts:88: // Step 5: Run real multi-agent workflow
+./cli/src/commands/analyze.ts:93: // Step 5: Show completion summary
+./cli/src/commands/analyze.ts:120: // Save history
+./cli/src/commands/analyze.ts:139: // Ignore history save errors
+./cli/src/commands/agents.ts:1: /** (Block comment)
+./cli/src/commands/agents.ts:12: /** (Block comment)
+./cli/src/commands/agents.ts:47: /** (Block comment)
+./cli/src/commands/chat.ts:1: /** (Block comment)
+./cli/src/commands/chat.ts:21: /** (Block comment)
+./cli/src/commands/chat.ts:30: /** (Block comment)
+./cli/src/commands/chat.ts:37: // Pick a response based on message hash
+./cli/src/commands/chat.ts:41: // Yield status chunk first
+./cli/src/commands/chat.ts:44: // Simulate processing delay
+./cli/src/commands/chat.ts:47: // Stream the response word-by-word for natural feel
+./cli/src/commands/chat.ts:57: // Slight delay between words for natural pacing
+./cli/src/commands/chat.ts:62: /** (Block comment)
+./cli/src/commands/chat.ts:88: // Main REPL loop
+./cli/src/commands/chat.ts:102: // Handle slash commands
+./cli/src/commands/chat.ts:179: // Inline @file attachment parsing
+./cli/src/commands/chat.ts:192: // Remove the @mention from the visible prompt string so it reads naturally
+./cli/src/commands/chat.ts:210: // Show active attachments if any
+./cli/src/commands/chat.ts:221: // Inject hidden context
+./cli/src/commands/chat.ts:226: // Truncate to ~100k chars to prevent context blowouts
+./cli/src/commands/chat.ts:238: // Push both user input and response to maintain context
+./cli/src/container/container.ts:1: /** (Block comment)
+./cli/src/container/container.ts:9: /** (Block comment)
+./cli/src/container/container.ts:14: /** (Block comment)
+./cli/src/container/container.ts:18: /** Factory function to create the instance */ (Block comment)
+./cli/src/container/container.ts:20: /** Cached instance, populated on first resolve */ (Block comment)
+./cli/src/container/container.ts:24: /** (Block comment)
+./cli/src/container/container.ts:39: /** Internal registry mapping keys to their factory entries */ (Block comment)
+./cli/src/container/container.ts:42: /** (Block comment)
+./cli/src/container/container.ts:55: /** (Block comment)
+./cli/src/container/container.ts:81: /** (Block comment)
+./cli/src/container/container.ts:91: /** (Block comment)
+./cli/src/container/container.ts:100: /** (Block comment)
+./cli/src/container/container.ts:110: /** (Block comment)
+./cli/src/types/index.ts:1: /** (Block comment)
+./cli/src/types/index.ts:7: /** (Block comment)
+./cli/src/types/index.ts:12: /** (Block comment)
+./cli/src/types/index.ts:16: /** Unique identifier for the task */ (Block comment)
+./cli/src/types/index.ts:18: /** Human-readable name of the task */ (Block comment)
+./cli/src/types/index.ts:20: /** Current execution status */ (Block comment)
+./cli/src/types/index.ts:22: /** Timestamp when the task was started */ (Block comment)
+./cli/src/types/index.ts:24: /** Timestamp when the task completed (if finished) */ (Block comment)
+./cli/src/types/index.ts:26: /** Result data from the completed task */ (Block comment)
+./cli/src/types/index.ts:30: /** (Block comment)
+./cli/src/types/index.ts:34: /** Name of the agent that produced this result */ (Block comment)
+./cli/src/types/index.ts:36: /** Whether the agent completed successfully */ (Block comment)
+./cli/src/types/index.ts:38: /** The output data from the agent */ (Block comment)
+./cli/src/types/index.ts:40: /** Error message if the agent failed */ (Block comment)
+./cli/src/types/index.ts:42: /** Execution duration in milliseconds */ (Block comment)
+./cli/src/types/index.ts:46: /** (Block comment)
+./cli/src/types/index.ts:51: /** (Block comment)
+./cli/src/types/index.ts:55: /** The text token or content fragment */ (Block comment)
+./cli/src/types/index.ts:57: /** Name of the agent producing this chunk */ (Block comment)
+./cli/src/types/index.ts:59: /** Timestamp when this chunk was generated */ (Block comment)
+./cli/src/types/index.ts:61: /** The type of content this chunk represents */ (Block comment)
+./cli/src/types/index.ts:65: /** (Block comment)
+./cli/src/types/index.ts:69: /** The generated text content */ (Block comment)
+./cli/src/types/index.ts:71: /** The model identifier used for generation */ (Block comment)
+./cli/src/types/index.ts:73: /** Total tokens consumed (prompt + completion) */ (Block comment)
+./cli/src/types/index.ts:75: /** Round-trip latency in milliseconds */ (Block comment)
+./cli/src/types/index.ts:79: /** (Block comment)
+./cli/src/types/index.ts:83: /** Active AI provider name (e.g., 'gemini', 'openai') */ (Block comment)
+./cli/src/types/index.ts:85: /** Model identifier to use for inference */ (Block comment)
+./cli/src/types/index.ts:87: /** UI theme name */ (Block comment)
+./cli/src/types/index.ts:89: /** Map of provider names to their API keys */ (Block comment)
+./cli/src/types/index.ts:91: /** Directory path for analysis output files */ (Block comment)
+./cli/src/types/index.ts:93: /** Whether anonymous usage telemetry is enabled */ (Block comment)
+./cli/src/types/index.ts:97: /** (Block comment)
+./cli/src/types/index.ts:101: /** Provider display name */ (Block comment)
+./cli/src/types/index.ts:103: /** Authentication API key */ (Block comment)
+./cli/src/types/index.ts:105: /** Base URL for the provider's API */ (Block comment)
+./cli/src/types/index.ts:107: /** Default model to use */ (Block comment)
+./cli/src/types/index.ts:109: /** Request timeout in milliseconds */ (Block comment)
+./cli/src/types/index.ts:113: /** (Block comment)
+./cli/src/types/index.ts:117: /** Unique session identifier */ (Block comment)
+./cli/src/types/index.ts:119: /** Timestamp when the session was started */ (Block comment)
+./cli/src/types/index.ts:121: /** Ordered history of user inputs and agent responses */ (Block comment)
+./cli/src/types/index.ts:123: /** Arbitrary key-value context data for the session */ (Block comment)
+./cli/src/types/index.ts:127: /** (Block comment)
+./cli/src/types/index.ts:131: /** Original file name */ (Block comment)
+./cli/src/types/index.ts:133: /** Absolute path to the file */ (Block comment)
+./cli/src/types/index.ts:135: /** File size in bytes */ (Block comment)
+./cli/src/types/index.ts:137: /** MIME type or file extension type */ (Block comment)
+./cli/src/types/index.ts:139: /** Timestamp when the file was resolved */ (Block comment)
+./cli/src/types/index.ts:143: /** (Block comment)
+./cli/src/types/index.ts:147: /** Primary command name */ (Block comment)
+./cli/src/types/index.ts:149: /** Human-readable description */ (Block comment)
+./cli/src/types/index.ts:151: /** Alternative names for the command */ (Block comment)
+./cli/src/types/index.ts:153: /** Usage pattern string (e.g., 'analyze <file> [options]') */ (Block comment)
+./cli/src/types/index.ts:155: /** Array of example invocations */ (Block comment)
+./cli/src/types/index.ts:159: /** (Block comment)
+./cli/src/types/index.ts:163: /** Name of the command being executed */ (Block comment)
+./cli/src/types/index.ts:165: /** Raw arguments passed to the command */ (Block comment)
+./cli/src/types/index.ts:167: /** Timestamp when the command started */ (Block comment)
+./cli/src/types/index.ts:169: /** Current CLI configuration snapshot */ (Block comment)
+./cli/src/workers/index.ts:3: // For now, just run directly. Worker threads added in v2.
+./cli/src/core/events.ts:1: /** (Block comment)
+./cli/src/core/events.ts:11: /** (Block comment)
+./cli/src/core/events.ts:16: /** Fired when an agent begins processing a task */ (Block comment)
+./cli/src/core/events.ts:18: /** Fired when an agent successfully completes a task */ (Block comment)
+./cli/src/core/events.ts:20: /** Fired when an agent encounters an error during execution */ (Block comment)
+./cli/src/core/events.ts:22: /** Fired for each streaming token received from an agent */ (Block comment)
+./cli/src/core/events.ts:24: /** Fired when an agent's streaming output finishes */ (Block comment)
+./cli/src/core/events.ts:26: /** Fired when a document analysis workflow begins */ (Block comment)
+./cli/src/core/events.ts:28: /** Fired when a document analysis workflow completes */ (Block comment)
+./cli/src/core/events.ts:30: /** Fired before a CLI command begins execution */ (Block comment)
+./cli/src/core/events.ts:32: /** Fired after a CLI command finishes execution */ (Block comment)
+./cli/src/core/events.ts:34: /** Fired when a @file reference is successfully resolved */ (Block comment)
+./cli/src/core/events.ts:38: /** (Block comment)
+./cli/src/core/events.ts:56: /** (Block comment)
+./cli/src/core/events.ts:68: /** (Block comment)
+./cli/src/core/events.ts:80: /** (Block comment)
+./cli/src/core/events.ts:93: /** (Block comment)
+./cli/src/config/configManager.ts:1: /** (Block comment)
+./cli/src/config/configManager.ts:16: /** (Block comment)
+./cli/src/config/configManager.ts:21: /** Active AI provider name */ (Block comment)
+./cli/src/config/configManager.ts:26: /** Model identifier for the active provider */ (Block comment)
+./cli/src/config/configManager.ts:31: /** UI theme name */ (Block comment)
+./cli/src/config/configManager.ts:33: /** Map of provider names to API keys */ (Block comment)
+./cli/src/config/configManager.ts:35: /** Output directory for analysis results */ (Block comment)
+./cli/src/config/configManager.ts:37: /** Whether anonymous telemetry collection is enabled */ (Block comment)
+./cli/src/config/configManager.ts:41: /** Path to the user's configuration file */ (Block comment)
+./cli/src/config/configManager.ts:45: /** Path to the parent project's .env file */ (Block comment)
+./cli/src/config/configManager.ts:52: /** (Block comment)
+./cli/src/config/configManager.ts:70: /** In-memory configuration state */ (Block comment)
+./cli/src/config/configManager.ts:73: /** Whether the manager has been initialized */ (Block comment)
+./cli/src/config/configManager.ts:77: // Start with validated defaults
+./cli/src/config/configManager.ts:81: /** (Block comment)
+./cli/src/config/configManager.ts:88: // Load environment variables from the project root .env file
+./cli/src/config/configManager.ts:91: // Load or create the config file
+./cli/src/config/configManager.ts:98: /** (Block comment)
+./cli/src/config/configManager.ts:109: /** (Block comment)
+./cli/src/config/configManager.ts:129: /** (Block comment)
+./cli/src/config/configManager.ts:138: /** (Block comment)
+./cli/src/config/configManager.ts:156: /** (Block comment)
+./cli/src/config/configManager.ts:165: /** (Block comment)
+./cli/src/config/configManager.ts:199: /** (Block comment)
+./cli/src/config/configManager.ts:216: /** (Block comment)
+./cli/src/hooks/index.ts:1: /** (Block comment)
+./cli/src/hooks/telemetryHook.ts:1: /** (Block comment)
+./cli/src/hooks/telemetryHook.ts:13: /** (Block comment)
+./cli/src/hooks/telemetryHook.ts:17: /** The command that was executed */ (Block comment)
+./cli/src/hooks/telemetryHook.ts:19: /** ISO 8601 timestamp of execution */ (Block comment)
+./cli/src/hooks/telemetryHook.ts:21: /** Execution duration in milliseconds */ (Block comment)
+./cli/src/hooks/telemetryHook.ts:23: /** Whether the command succeeded */ (Block comment)
+./cli/src/hooks/telemetryHook.ts:25: /** Active AI provider at time of execution */ (Block comment)
+./cli/src/hooks/telemetryHook.ts:27: /** Node.js version */ (Block comment)
+./cli/src/hooks/telemetryHook.ts:29: /** Operating system platform */ (Block comment)
+./cli/src/hooks/telemetryHook.ts:33: /** Path to the local telemetry data file */ (Block comment)
+./cli/src/hooks/telemetryHook.ts:37: /** (Block comment)
+./cli/src/hooks/telemetryHook.ts:74: // Keep only the last 1000 events to prevent unbounded growth
+./cli/src/hooks/telemetryHook.ts:87: // Telemetry failures should never break the CLI
+./cli/src/hooks/postCommand.ts:1: /** (Block comment)
+./cli/src/hooks/postCommand.ts:12: /** (Block comment)
+./cli/src/hooks/errorHook.ts:1: /** (Block comment)
+./cli/src/hooks/errorHook.ts:13: /** (Block comment)
+./cli/src/hooks/preCommand.ts:1: /** (Block comment)
+./cli/src/hooks/preCommand.ts:11: /** (Block comment)
+./cli/src/cache/cacheManager.ts:78: // Ignore
+./cli/src/providers/mockProvider.ts:1: /** (Block comment)
+./cli/src/providers/mockProvider.ts:14: /** Canned responses the mock provider rotates through. */ (Block comment)
+./cli/src/providers/mockProvider.ts:39: /** (Block comment)
+./cli/src/providers/mockProvider.ts:57: /** @inheritdoc */ (Block comment)
+./cli/src/providers/mockProvider.ts:60: /** Index tracking which canned response to use next. */ (Block comment)
+./cli/src/providers/mockProvider.ts:63: /** Base delay in ms before returning a generate() response. */ (Block comment)
+./cli/src/providers/mockProvider.ts:66: /** Minimum delay in ms between streamed characters. */ (Block comment)
+./cli/src/providers/mockProvider.ts:69: /** Maximum delay in ms between streamed characters. */ (Block comment)
+./cli/src/providers/mockProvider.ts:72: /** (Block comment)
+./cli/src/providers/mockProvider.ts:90: /** (Block comment)
+./cli/src/providers/mockProvider.ts:99: /** (Block comment)
+./cli/src/providers/mockProvider.ts:112: // Respect abort signal
+./cli/src/providers/mockProvider.ts:136: /** (Block comment)
+./cli/src/providers/mockProvider.ts:147: // Suppress unused variable lint — prompt is part of the abstract contract
+./cli/src/providers/mockProvider.ts:158: // Check abort signal before each character
+./cli/src/providers/mockProvider.ts:178: /** (Block comment)
+./cli/src/providers/mockProvider.ts:187: /** (Block comment)
+./cli/src/providers/mockProvider.ts:198: /** (Block comment)
+./cli/src/providers/baseProvider.ts:1: /** (Block comment)
+./cli/src/providers/baseProvider.ts:7: /** (Block comment)
+./cli/src/providers/baseProvider.ts:11: /** The model identifier to use for generation (e.g., 'gemini-pro'). */ (Block comment)
+./cli/src/providers/baseProvider.ts:13: /** Controls randomness in output. Range: 0.0 (deterministic) to 2.0 (creative). */ (Block comment)
+./cli/src/providers/baseProvider.ts:15: /** Maximum number of tokens to generate in the response. */ (Block comment)
+./cli/src/providers/baseProvider.ts:17: /** AbortController signal to cancel the request. */ (Block comment)
+./cli/src/providers/baseProvider.ts:19: /** System prompt to prepend to the generation context. */ (Block comment)
+./cli/src/providers/baseProvider.ts:23: /** (Block comment)
+./cli/src/providers/baseProvider.ts:27: /** The generated text content. */ (Block comment)
+./cli/src/providers/baseProvider.ts:29: /** The model that produced this response. */ (Block comment)
+./cli/src/providers/baseProvider.ts:31: /** Token usage statistics. */ (Block comment)
+./cli/src/providers/baseProvider.ts:37: /** Time taken to generate the response in milliseconds. */ (Block comment)
+./cli/src/providers/baseProvider.ts:39: /** Whether the response was truncated due to max tokens. */ (Block comment)
+./cli/src/providers/baseProvider.ts:43: /** (Block comment)
+./cli/src/providers/baseProvider.ts:47: /** The token or text fragment. */ (Block comment)
+./cli/src/providers/baseProvider.ts:49: /** Whether this is the final chunk. */ (Block comment)
+./cli/src/providers/baseProvider.ts:51: /** Cumulative token count so far. */ (Block comment)
+./cli/src/providers/baseProvider.ts:55: /** (Block comment)
+./cli/src/providers/baseProvider.ts:75: /** Whether this provider has been successfully initialized. */ (Block comment)
+./cli/src/providers/baseProvider.ts:78: /** Human-readable name for this provider. */ (Block comment)
+./cli/src/providers/baseProvider.ts:81: /** Whether this provider has been successfully initialized. */ (Block comment)
+./cli/src/providers/baseProvider.ts:86: /** (Block comment)
+./cli/src/providers/baseProvider.ts:93: /** (Block comment)
+./cli/src/providers/baseProvider.ts:102: /** (Block comment)
+./cli/src/providers/baseProvider.ts:111: /** (Block comment)
+./cli/src/providers/baseProvider.ts:117: /** (Block comment)
+./cli/src/providers/baseProvider.ts:126: /** (Block comment)
+./cli/src/providers/baseProvider.ts:134: /** (Block comment)
+./cli/src/services/index.ts:1: /** (Block comment)
+./cli/src/services/pythonRunner.ts:111: // We use log-update to overwrite the terminal smoothly with accumulated markdown
+./cli/src/services/pythonRunner.ts:197: // If we streamed tokens, we don't need to parse FINAL_RESPONSE_START unless it didn't stream
+./cli/src/services/fileService.ts:1: /** (Block comment)
+./cli/src/services/fileService.ts:15: /** (Block comment)
+./cli/src/services/fileService.ts:28: /** (Block comment)
+./cli/src/services/fileService.ts:33: /** (Block comment)
+./cli/src/services/fileService.ts:38: /** (Block comment)
+./cli/src/services/fileService.ts:55: // Strip @ prefix if present
+./cli/src/services/fileService.ts:58: // Resolve to absolute path
+./cli/src/services/fileService.ts:68: // File may not exist yet — that's checked in validateFile
+./cli/src/services/fileService.ts:79: // Emit resolution event
+./cli/src/services/fileService.ts:85: /** (Block comment)
+./cli/src/services/fileService.ts:92: // Check existence
+./cli/src/services/fileService.ts:100: // Check it's actually a file (not directory)
+./cli/src/services/fileService.ts:109: // Check extension
+./cli/src/services/fileService.ts:119: // Check file is not empty
+./cli/src/services/fileService.ts:130: /** (Block comment)
+./cli/src/services/fileService.ts:145: // Ensure destination directory exists
+./cli/src/services/fileService.ts:158: // Brief delay for visual feedback
+./cli/src/services/fileService.ts:174: /** (Block comment)
+./cli/src/services/fileService.ts:199: /** (Block comment)
+./cli/src/services/fileService.ts:210: /** (Block comment)
+./cli/src/services/pythonRunner.js:101: // We use log-update to overwrite the terminal smoothly with accumulated markdown
+./cli/src/services/pythonRunner.js:186: // If we streamed tokens, we don't need to parse FINAL_RESPONSE_START unless it didn't stream
+./cli/src/transport/processTransport.ts:5: /** (Block comment)
+./cli/src/transport/processTransport.ts:26: // Collect all streamed output and return it as a single string
+./cli/src/transport/baseTransport.ts:1: /** (Block comment)
+./cli/src/transport/baseTransport.ts:5: /** (Block comment)
+./cli/src/transport/baseTransport.ts:10: /** (Block comment)
+./cli/src/transport/baseTransport.ts:15: /** (Block comment)
+./cli/src/transport/baseTransport.ts:20: /** (Block comment)
+./cli/src/utils/logger.ts:1: /** (Block comment)
+./cli/src/utils/logger.ts:11: /** (Block comment)
+./cli/src/utils/logger.ts:16: /** (Block comment)
+./cli/src/utils/logger.ts:26: /** (Block comment)
+./cli/src/utils/logger.ts:36: /** (Block comment)
+./cli/src/utils/logger.ts:50: /** Current minimum log level threshold */ (Block comment)
+./cli/src/utils/logger.ts:53: /** Optional file path for persistent log output */ (Block comment)
+./cli/src/utils/logger.ts:56: /** (Block comment)
+./cli/src/utils/logger.ts:65: /** (Block comment)
+./cli/src/utils/logger.ts:74: /** (Block comment)
+./cli/src/utils/logger.ts:86: /** (Block comment)
+./cli/src/utils/logger.ts:96: /** (Block comment)
+./cli/src/utils/logger.ts:106: /** (Block comment)
+./cli/src/utils/logger.ts:116: /** (Block comment)
+./cli/src/utils/logger.ts:126: /** (Block comment)
+./cli/src/utils/logger.ts:152: // Fire-and-forget file append (non-blocking)
+./cli/src/utils/logger.ts:156: // Silently ignore file write failures to prevent cascading errors
+./cli/src/utils/logger.ts:161: /** (Block comment)
+./cli/src/utils/logger.ts:173: /** (Block comment)
+./cli/src/utils/terminal.ts:1: /** (Block comment)
+./cli/src/utils/terminal.ts:9: /** (Block comment)
+./cli/src/utils/terminal.ts:13: /** Current terminal width in columns */ (Block comment)
+./cli/src/utils/terminal.ts:15: /** Current terminal height in rows */ (Block comment)
+./cli/src/utils/terminal.ts:17: /** Whether the terminal supports ANSI color codes */ (Block comment)
+./cli/src/utils/terminal.ts:19: /** Whether the terminal can render Unicode characters */ (Block comment)
+./cli/src/utils/terminal.ts:21: /** Whether stdout is connected to an interactive TTY */ (Block comment)
+./cli/src/utils/terminal.ts:23: /** Whether the terminal supports 256-color mode */ (Block comment)
+./cli/src/utils/terminal.ts:25: /** Whether the terminal supports true color (16 million colors) */ (Block comment)
+./cli/src/utils/terminal.ts:29: /** (Block comment)
+./cli/src/utils/terminal.ts:39: /** (Block comment)
+./cli/src/utils/terminal.ts:49: /** (Block comment)
+./cli/src/utils/terminal.ts:59: /** (Block comment)
+./cli/src/utils/terminal.ts:69: // Check locale environment variables for UTF-8 indicators
+./cli/src/utils/terminal.ts:75: // Check for known Unicode-capable terminal programs
+./cli/src/utils/terminal.ts:82: // Windows Terminal and VS Code integrated terminal
+./cli/src/utils/terminal.ts:90: /** (Block comment)
+./cli/src/utils/terminal.ts:99: /** (Block comment)
+./cli/src/utils/terminal.ts:108: /** (Block comment)
+./cli/src/utils/terminal.ts:117: /** (Block comment)
+./cli/src/ui/index.ts:1: /** (Block comment)
+./cli/src/ui/themes/index.ts:1: /** (Block comment)
+./cli/src/ui/themes/index.ts:8: /** (Block comment)
+./cli/src/ui/themes/index.ts:23: /** (Block comment)
+./cli/src/ui/themes/index.ts:27: /** Human-readable theme name. */ (Block comment)
+./cli/src/ui/themes/index.ts:29: /** Short description shown in theme listings. */ (Block comment)
+./cli/src/ui/themes/index.ts:31: /** ASCII banner text rendered by figlet. */ (Block comment)
+./cli/src/ui/themes/index.ts:33: /** Figlet font for banner rendering. */ (Block comment)
+./cli/src/ui/themes/index.ts:35: /** Hex color array for `gradient-string`. */ (Block comment)
+./cli/src/ui/themes/index.ts:37: /** Primary accent hex color for highlights. */ (Block comment)
+./cli/src/ui/themes/index.ts:39: /** Secondary accent hex color for subtle elements. */ (Block comment)
+./cli/src/ui/themes/index.ts:41: /** Ora spinner style key. */ (Block comment)
+./cli/src/ui/themes/index.ts:43: /** Border style for boxen cards. */ (Block comment)
+./cli/src/ui/themes/index.ts:47: /** (Block comment)
+./cli/src/ui/themes/index.ts:62: /** (Block comment)
+./cli/src/ui/themes/index.ts:77: /** (Block comment)
+./cli/src/ui/themes/index.ts:92: /** (Block comment)
+./cli/src/ui/themes/index.ts:107: /** (Block comment)
+./cli/src/ui/themes/index.ts:122: /** (Block comment)
+./cli/src/ui/themes/index.ts:133: /** (Block comment)
+./cli/src/ui/themes/index.ts:151: /** (Block comment)
+./cli/src/ui/themes/index.ts:163: /** (Block comment)
+./cli/src/ui/components/index.ts:1: /** (Block comment)
+./cli/src/ui/components/banner.ts:1: /** (Block comment)
+./cli/src/ui/components/banner.ts:16: /** (Block comment)
+./cli/src/ui/components/banner.ts:26: // Pick a color from the array cyclically, or map it linearly over the lines
+./cli/src/ui/components/banner.ts:34: /** (Block comment)
+./cli/src/ui/components/banner.ts:46: /** (Block comment)
+./cli/src/ui/components/banner.ts:71: /** (Block comment)
+./cli/src/ui/components/banner.ts:87: // Graceful fallback if figlet font is unavailable
+./cli/src/ui/components/errorDisplay.ts:1: /** (Block comment)
+./cli/src/ui/components/errorDisplay.ts:10: /** (Block comment)
+./cli/src/ui/components/errorDisplay.ts:54: /** (Block comment)
+./cli/src/ui/components/errorDisplay.ts:78: /** (Block comment)
+./cli/src/ui/components/repl.ts:17: // Fallback for non-TTY (piped inputs/tests)
+./cli/src/ui/components/repl.ts:24: // setup raw mode
+./cli/src/ui/components/repl.ts:53: // Sort: prioritize exact prefix match, then files vs dirs
+./cli/src/ui/components/repl.ts:80: // ignore
+./cli/src/ui/components/repl.ts:88: // Clear line and rewrite
+./cli/src/ui/components/repl.ts:115: // Reposition cursor
+./cli/src/ui/components/repl.ts:128: // Ctrl+C
+./cli/src/ui/components/repl.ts:137: // Enter
+./cli/src/ui/components/repl.ts:139: // Select suggestion instead of submitting
+./cli/src/ui/components/repl.ts:150: // Submit prompt
+./cli/src/ui/components/repl.ts:159: // Tab
+./cli/src/ui/components/repl.ts:172: // Backspace
+./cli/src/ui/components/repl.ts:180: // Ctrl+W (Delete word)
+./cli/src/ui/components/repl.ts:191: // Ctrl+U (Delete entire line)
+./cli/src/ui/components/repl.ts:197: // Arrow Down
+./cli/src/ui/components/repl.ts:203: // Arrow Up
+./cli/src/ui/components/repl.ts:209: // Arrow Left
+./cli/src/ui/components/repl.ts:216: // Arrow Right
+./cli/src/ui/components/repl.ts:223: // Home
+./cli/src/ui/components/repl.ts:228: // End
+./cli/src/ui/components/repl.ts:233: // Alt+B
+./cli/src/ui/components/repl.ts:246: // Alt+F
+./cli/src/ui/components/repl.ts:259: // Ignore other unknown escape sequences (e.g. PgUp/PgDn)
+./cli/src/ui/components/repl.ts:261: // Standard typing
+./cli/src/ui/renderers/markdownRenderer.js:1: /** (Block comment)
+./cli/src/ui/renderers/markdownRenderer.js:10: // Terminal compatibility check
+./cli/src/ui/renderers/markdownRenderer.js:18: /** (Block comment)
+./cli/src/ui/renderers/markdownRenderer.js:22: // Premium AI Terminal aesthetics
+./cli/src/ui/renderers/markdownRenderer.js:37: // Fix marked-terminal ignoring inline styles inside list items
+./cli/src/ui/renderers/markdownRenderer.js:48: /** (Block comment)
+./cli/src/ui/renderers/markdownRenderer.js:57: // Prevent over-indentation of lists from being treated as raw code blocks
+./cli/src/ui/renderers/index.ts:1: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:1: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:12: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:23: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:34: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:44: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:54: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:58: /** Active ora spinners keyed by agent name. */ (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:61: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:78: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:98: // Show summary data if available
+./cli/src/ui/renderers/agentRenderer.ts:118: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:155: /** (Block comment)
+./cli/src/ui/renderers/agentRenderer.ts:166: /** (Block comment)
+./cli/src/ui/renderers/markdownRenderer.ts:1: /** (Block comment)
+./cli/src/ui/renderers/markdownRenderer.ts:13: // Terminal compatibility check
+./cli/src/ui/renderers/markdownRenderer.ts:22: /** (Block comment)
+./cli/src/ui/renderers/markdownRenderer.ts:26: // Premium AI Terminal aesthetics
+./cli/src/ui/renderers/markdownRenderer.ts:42: // Fix marked-terminal ignoring inline styles inside list items
+./cli/src/ui/renderers/markdownRenderer.ts:54: /** (Block comment)
+./cli/src/ui/renderers/markdownRenderer.ts:63: // Prevent over-indentation of lists from being treated as raw code blocks
+./cli/src/ui/renderers/streamRenderer.ts:1: /** (Block comment)
+./cli/src/ui/renderers/streamRenderer.ts:11: /** (Block comment)
+./cli/src/ui/renderers/streamRenderer.ts:21: /** (Block comment)
+./cli/src/ui/renderers/streamRenderer.ts:26: /** Per-character delay in ms for the typing effect. */ (Block comment)
+./cli/src/ui/renderers/streamRenderer.ts:29: /** (Block comment)
+./cli/src/ui/renderers/streamRenderer.ts:36: /** (Block comment)
+./cli/src/ui/renderers/streamRenderer.ts:81: // Final newline after stream completes
+./cli/src/ui/renderers/streamRenderer.ts:92: /** (Block comment)
+./cli/src/ui/renderers/streamRenderer.ts:108: /** (Block comment)
+./cli/src/ui/renderers/streamRenderer.ts:117: /** (Block comment)
+./cli/src/ui/renderers/streamRenderer.ts:127: /** (Block comment)
+./cli/src/agents/index.ts:1: /** (Block comment)
+./cli/src/agents/index.ts:16: /** (Block comment)
+./cli/src/agents/index.ts:23: /** (Block comment)
+./cli/src/agents/index.ts:27: /** Display name of the agent. */ (Block comment)
+./cli/src/agents/index.ts:29: /** Short description of what this agent does. */ (Block comment)
+./cli/src/agents/index.ts:31: /** Simulated processing time range [min, max] in ms. */ (Block comment)
+./cli/src/agents/index.ts:33: /** Summary message template (receives the file base name). */ (Block comment)
+./cli/src/agents/index.ts:37: /** (Block comment)
+./cli/src/agents/index.ts:67: /** (Block comment)
+./cli/src/agents/index.ts:74: /** (Block comment)
+./cli/src/agents/index.ts:95: // Build initial task list for progress display
+./cli/src/agents/index.ts:114: // Mark as running
+./cli/src/agents/index.ts:118: // Emit start event
+./cli/src/agents/index.ts:121: // Show spinner
+./cli/src/agents/index.ts:124: // Simulate processing
+./cli/src/agents/index.ts:128: // Build result
+./cli/src/agents/index.ts:137: // Mark as completed
+./cli/src/agents/index.ts:142: // Show completion
+./cli/src/agents/index.ts:145: // Emit complete event
+./cli/src/agents/index.ts:159: /** (Block comment)
+./cli/src/agents/index.ts:188: // Handle SIGINT gracefully during analysis
+./cli/src/agents/index.ts:202: // Look for agent processing logs: "[Research Agent] processing..."
+./cli/src/agents/index.ts:219: // Look for final report start
+./google/__init__.py:3: # Allow this local `google` package to be a namespace package so that
+./google/__init__.py:4: # installed `google.*` packages (like `google.auth`) remain importable.
+./google/adk/sessions/in_memory_session_service.py:14: # sessions: {app_name: {user_id: {session_id: session_data}}}
+./google/adk/agents/agent.py:307: # Try to extract the prompt from typical args, default to the whole args dict or prompt
+./google/adk/agents/agent.py:311: # Convert any non-serializable objects (like Content) to safe representations

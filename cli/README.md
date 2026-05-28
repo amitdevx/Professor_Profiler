@@ -1,8 +1,8 @@
-# 🎓 Professor Profiler CLI
+#  Professor Profiler CLI
 
 The official terminal interface for the Professor Profiler multi-agent AI system.
 
-## 🚀 Installation
+##  Installation
 
 From the `cli` directory, run:
 ```bash
@@ -10,7 +10,7 @@ From the `cli` directory, run:
 ```
 This will install dependencies, build the TypeScript code, and link the `prof` command globally.
 
-## 💻 Commands
+##  Commands
 
 - `prof analyze <file>`: Analyze an exam paper using the multi-agent AI pipeline.
   - *Example*: `prof analyze @exam.pdf`
@@ -21,7 +21,7 @@ This will install dependencies, build the TypeScript code, and link the `prof` c
 - `prof history`: View session history.
 - `prof models`: List available AI models.
 
-## 🎨 Themes
+##  Themes
 
 You can customize the CLI startup banner using the `--theme` flag:
 ```bash
@@ -29,7 +29,7 @@ prof analyze @exam.pdf --theme cyberpunk
 ```
 Available themes: `minimal`, `cyberpunk`, `hacker`, `ocean`, `sunset`.
 
-## ⚙️ Configuration
+## ️ Configuration
 
 Configuration is stored in `~/.professor-profiler/config.json`.
 You can manage it via the `prof config` command:
@@ -39,7 +39,7 @@ prof config get provider
 prof config list
 ```
 
-## 🔄 Autocomplete
+##  Autocomplete
 
 To enable shell autocomplete, add the following to your `~/.bashrc` or `~/.zshrc`:
 ```bash

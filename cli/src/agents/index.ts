@@ -92,7 +92,6 @@ export async function simulateAgentWorkflow(filePath: string): Promise<AgentResu
   const fileName = path.basename(filePath);
   const results: AgentResult[] = [];
 
-  // Build initial task list for progress display
   const tasks: AgentTask[] = AGENT_PIPELINE.map((a, i) => ({
     id: `agent-${i}`,
     name: a.name,
@@ -118,14 +117,11 @@ export async function simulateAgentWorkflow(filePath: string): Promise<AgentResu
     // Emit start event
     eventBus.emit('agent:start', { agentName: agentDef.name, filePath } as any);
 
-    // Show spinner
     agentRenderer.renderAgentStart(agentDef.name);
 
-    // Simulate processing
     const processingTime = randomInRange(...agentDef.delayRange);
     await delay(processingTime);
 
-    // Build result
     const result: AgentResult = {
       agentName: agentDef.name,
       success: true,
@@ -139,7 +135,6 @@ export async function simulateAgentWorkflow(filePath: string): Promise<AgentResu
     task.endTime = new Date();
     task.result = result;
 
-    // Show completion
     agentRenderer.renderAgentComplete(agentDef.name, result);
 
     // Emit complete event
@@ -185,7 +180,6 @@ export async function runRealAgentWorkflow(filePath: string, agentName: string =
   const transport = new ProcessTransport('python3');
   const controller = new AbortController();
   
-  // Handle SIGINT gracefully during analysis
   const sigintHandler = () => {
     controller.abort();
   };
@@ -199,7 +193,6 @@ export async function runRealAgentWorkflow(filePath: string, agentName: string =
     for await (const line of transport.stream({ file: filePath, agentName }, controller.signal)) {
       fullOutput += line + '\n';
       
-      // Look for agent processing logs: "[Research Agent] processing..."
       const match = line.match(/^\[(.*?)\] processing/);
       if (match && match[1]) {
         const agentName = match[1];
@@ -216,7 +209,6 @@ export async function runRealAgentWorkflow(filePath: string, agentName: string =
         }
       }
       
-      // Look for final report start
       if (line.includes('ANALYSIS REPORT GENERATED SUCCESSFULLY')) {
         if (currentAgent !== '') {
            agentRenderer.renderAgentComplete(currentAgent, {

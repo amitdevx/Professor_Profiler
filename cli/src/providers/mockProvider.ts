@@ -155,7 +155,6 @@ export class MockProvider extends BaseProvider {
     let tokenCount = 0;
 
     for (let i = 0; i < content.length; i++) {
-      // Check abort signal before each character
       if (options?.signal?.aborted) {
         throw new Error('Stream aborted.');
       }

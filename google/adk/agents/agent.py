@@ -287,11 +287,9 @@ class Agent:
         for sub_agent in self.sub_agents:
             if sub_agent.name == function_name:
                 logger.info("Routing hallucinated tool call '%s' to sub-agent", function_name)
-                # Try to extract the prompt from typical args, default to the whole args dict or prompt
                 sub_prompt = args.get("prompt") or args.get("input_text") or args.get("question") or json.dumps(args)
                 result = await sub_agent.run(prompt=sub_prompt, context=self.context)
                 
-                # Convert any non-serializable objects (like Content) to safe representations
                 serializable_result = {}
                 for k, v in result.items():
                     if v is None or isinstance(v, (str, int, float, bool, list, dict)):

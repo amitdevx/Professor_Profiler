@@ -44,13 +44,11 @@ export function createAnalyzeCommand(): Command {
       
       const agentName = agentArg ? (agentArg.startsWith('@') ? agentArg.slice(1) : agentArg) : 'all';
       try {
-        // Step 1: Resolve file path
         const fileInfo = fileService.resolveFilePath(fileArg);
         console.log('');
         console.log(chalk.dim(`  📁 Resolved: ${chalk.white(fileInfo.path)}`));
         console.log(chalk.dim(`  📄 Type:     ${chalk.white(fileInfo.type)}`));
 
-        // Step 2: Validate file
         const validation = fileService.validateFile(fileInfo);
         if (!validation.valid) {
           showError('Invalid File', validation.error!, 'Supported formats: .pdf, .md, .txt, .docx, .json');
@@ -62,13 +60,10 @@ export function createAnalyzeCommand(): Command {
         console.log(chalk.dim(`  📊 Size:     ${chalk.white(`${sizeKB} KB`)}`));
         console.log('');
 
-        // Step 3: File is analyzed directly from its absolute path
-        // Set the output directory environment variable so backend uses it
         const outDir = path.resolve(options.output);
         fs.mkdirSync(outDir, { recursive: true });
         process.env.PROF_OUTPUT_DIR = outDir;
 
-        // Step 4: Validate API Keys before running backend
         const envPath = path.resolve(repoRoot, '.env');
         if (fs.existsSync(envPath)) {
           const envContent = fs.readFileSync(envPath, 'utf-8');
@@ -85,12 +80,10 @@ export function createAnalyzeCommand(): Command {
           return;
         }
 
-        // Step 5: Run real multi-agent workflow
         const startTime = Date.now();
         const results = await runRealAgentWorkflow(fileInfo.path, agentName);
         const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
 
-        // Step 5: Show completion summary
         const successCount = results.filter((r) => r.success).length;
         const failCount = results.filter((r) => !r.success).length;
 
@@ -117,7 +110,6 @@ export function createAnalyzeCommand(): Command {
 
         console.log(card);
 
-        // Save history
         try {
           const historyFile = path.join(os.homedir(), '.professor-profiler', 'history.json');
           const fsExtra = await import('fs-extra');

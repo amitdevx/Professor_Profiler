@@ -7,7 +7,6 @@ if str(repo_root) not in sys.path:
 from dotenv import load_dotenv
 load_dotenv(repo_root / '.env')
 
-# Setup DEBUG logging to stdout
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 from google.adk.runners import Runner

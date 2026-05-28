@@ -142,9 +142,9 @@ jobs:
         run: |
           # Discovers and executes all available tests
           if [ -d "tests" ] || [ -d "test" ]; then
-            pytest --verbose --tb=short || echo "⚠️  Tests failed or skipped"
+            pytest --verbose --tb=short || echo "️  Tests failed or skipped"
           else
-            echo "⚠️  No test directory found, skipping test execution"
+            echo "️  No test directory found, skipping test execution"
           fi
 
   # Validation 10: Package Build Verification

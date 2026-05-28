@@ -66,13 +66,11 @@ export function supportsColor(): boolean {
 export function supportsUnicode(): boolean {
   const env = process.env;
 
-  // Check locale environment variables for UTF-8 indicators
   const locale = (env['LANG'] ?? env['LC_ALL'] ?? env['LC_CTYPE'] ?? '').toLowerCase();
   if (locale.includes('utf-8') || locale.includes('utf8')) {
     return true;
   }
 
-  // Check for known Unicode-capable terminal programs
   const termProgram = (env['TERM_PROGRAM'] ?? '').toLowerCase();
   const unicodeTerminals = ['iterm.app', 'hyper', 'warp', 'alacritty', 'kitty', 'wezterm'];
   if (unicodeTerminals.includes(termProgram)) {
