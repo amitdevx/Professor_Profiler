@@ -194,7 +194,7 @@ Professor_Profiler/
 
 ---
 
-## Troubleshooting
+## Troubleshootings
 
 | Issue | Cause | Solution |
 | :--- | :--- | :--- |
