@@ -21,34 +21,33 @@ This project serves as a reference implementation for:
 The system creates a directed acyclic graph (DAG) of agent execution, managed by a central orchestrator.
 
 ### High-Level Design
-
 ```mermaid
 flowchart TD
     subgraph External_Layer [" External Layer"]
-        User([User / Client])
-        PDF_File[Exam PDF]
+        User(["User / Client"])
+        PDF_File["Exam PDF"]
     end
 
     subgraph Orchestration_Layer [" Orchestration Layer"]
-        Runner[<b>Runner</b><br><i>State Management</i>]
-        Memory[(<b>Memory Bank</b><br><i>JSON Persistence</i>)]
-        Session[<b>Session Service</b>]
+        Runner["<b>Runner</b><br><i>State Management</i>"]
+        Memory[("<b>Memory Bank</b><br><i>JSON Persistence</i>")]
+        Session["<b>Session Service</b>"]
     end
 
     subgraph Agent_Layer [" Agent Hierarchy"]
-        Root[<b>ROOT AGENT</b><br><i>Llama 3.3 70B (NIM)</i><br>The Orchestrator]
+        Root["<b>ROOT AGENT</b><br><i>Llama 3.3 70B (NIM)</i><br>The Orchestrator"]
 
         subgraph Workers ["Specialized Sub-Agents"]
-            Taxonomist[<b>Taxonomist</b><br><i>Llama 3.1 70B (NIM)</i><br>Topic & Bloom's Classification]
-            Trend[<b>Trend Spotter</b><br><i>Llama 3.3 70B (NIM)</i><br>Statistical Analysis]
-            Strat[<b>Strategist</b><br><i>Llama 3.3 70B (NIM)</i><br>Study Planning]
+            Taxonomist["<b>Taxonomist</b><br><i>Llama 3.1 70B (NIM)</i><br>Topic & Bloom's Classification"]
+            Trend["<b>Trend Spotter</b><br><i>Llama 3.3 70B (NIM)</i><br>Statistical Analysis"]
+            Strat["<b>Strategist</b><br><i>Llama 3.3 70B (NIM)</i><br>Study Planning"]
         end
     end
 
     subgraph Tool_Layer [" Tool Layer"]
-        Reader[PDF Ingestion]
-        Plotter[Matplotlib Viz]
-        Calc[Stats Engine]
+        Reader["PDF Ingestion"]
+        Plotter["Matplotlib Viz"]
+        Calc["Stats Engine"]
     end
 
     User --> Runner
@@ -65,7 +64,6 @@ flowchart TD
     Root --Calls--> Plotter
     Trend --Calls--> Calc
 ```
-
 ---
 
 ## Tech Stack
@@ -209,5 +207,5 @@ Professor_Profiler/
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more details.
 
-**Maintained by [uffamit](https://github.com/uffamit)**  
+**Maintained by [amitdevx](https://github.com/amitdevx)**  
 Website: [amitdevx](https://amitdevx.tech)
