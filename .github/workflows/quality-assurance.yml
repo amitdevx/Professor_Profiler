@@ -23,7 +23,7 @@ jobs:
       - name: Validate Python Syntax
         run: |
           # Performs bytecode compilation to detect syntax issues
-          python -m compileall profiler_agent/ google/ tests/ demo.py create_sample_exams.py -q
+          python -m compileall profiler_agent/ google/ tests/ demo.py scripts/create_sample_exams.py -q
 
   # Validation 2: Code Style Enforcement (Black & Isort)
   enforce-style:
@@ -60,9 +60,9 @@ jobs:
       - name: Execute Flake8 Analysis
         # Fails build only on critical issues (E9, F63, F7, F82)
         run: |
-          flake8 profiler_agent/ google/ tests/ demo.py create_sample_exams.py --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 profiler_agent/ google/ tests/ demo.py scripts/create_sample_exams.py --count --select=E9,F63,F7,F82 --show-source --statistics
           # Extended analysis without blocking the build
-          flake8 profiler_agent/ google/ tests/ demo.py create_sample_exams.py --count --exit-zero --max-complexity=12 --max-line-length=120 --statistics
+          flake8 profiler_agent/ google/ tests/ demo.py scripts/create_sample_exams.py --count --exit-zero --max-complexity=12 --max-line-length=120 --statistics
 
   # Validation 4: Type Safety Verification
   verify-types:
@@ -134,11 +134,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install pytest pytest-cov pytest-asyncio
+          pip install pytest pytest-cov pytest-asyncio python-dotenv openai
       - name: Execute Test Suite
         continue-on-error: true
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY || 'dummy-key-for-testing' }}
+          NIM_API_KEY: ${{ secrets.NIM_API_KEY || 'dummy-key-for-testing' }}
         run: |
           # Discovers and executes all available tests
           if [ -d "tests" ] || [ -d "test" ]; then
