@@ -167,7 +167,6 @@ pytest tests/test_agent.py
 ```
 
 ---
-
 ## Project Structure
 
 ```text
