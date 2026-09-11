@@ -1,0 +1,388 @@
+manifest:
+  version: "0.1.3"
+  schema: https://a2as.org/cert/schema
+  subject:
+    name: amitdevx/professor_profiler
+    source: https://github.com/amitdevx/professor_profiler
+    branch: main
+    commit: "f06b6f56"
+    scope: [google/adk/agents/__init__.py, google/adk/tools/__init__.py, profiler_agent/agent.py, profiler_agent/config.py,
+      profiler_agent/sub_agents/__init__.py, profiler_agent/sub_agents/strategist.py, profiler_agent/sub_agents/taxonomist.py,
+      profiler_agent/sub_agents/trend_spotter.py, profiler_agent/tools.py]
+  issued:
+    by: A2AS.org
+    at: '2026-02-11T16:54:48Z'
+    url: https://a2as.org/certified/agents/amitdevx/professor_profiler
+  signatures:
+    digest: sha256:dvqMOWRFi6ED2-I4ktWcvQLteP68pkN0-VvqLftLA_w
+    key: ed25519:bixY6QktCJTg8tohH98igKkmsPiIWq4HpmoqbFogfwA
+    sig: ed25519:uxFnZnjPjtAJXPURYAnUx83B0Al68o6PIYgFfwmTxVGxwAyHuvOPDnnewAaAfrr83372u-uJHx1-TDrmf7KbBQ
+
+agents:
+  professor_profiler_agent:
+    type: instance
+    models: [gemini-2.0-pro-exp]
+    tools: [read_pdf_content, analyze_statistics, visualize_trends, compare_exams]
+    params:
+      name: professor_profiler_agent
+      description: Main orchestrator. Ingests PDFs, classifies questions, finds trends, and creates study plans.
+      instruction: ['Workflow:', 1. Use read_pdf_content tool to ingest exam paper PDFs, 2. Delegate to taxonomist sub-agent
+          to classify questions by topic and Bloom's taxonomy, 3. Use analyze_statistics tool to compute frequency distributions,
+        4. Delegate to trend_spotter sub-agent to identify statistical shifts, 5. Use visualize_trends tool to create charts,
+        6. Delegate to strategist sub-agent to generate study recommendations, 'Current date: {datetime.datetime.now.strftime}',
+        'You have access to these tools:', '- read_pdf_content: Extract text from PDF files', '- analyze_statistics: Compute
+          statistical patterns', '- visualize_trends: Generate charts', '- compare_exams: Compare multiple exam papers', 'Your
+          sub-agents are:', '- taxonomist: Classifies questions (fast, using flash model)', '- trend_spotter: Analyzes trends
+          (detailed analysis)', '- strategist: Generates study plans (actionable recommendations)']
+      sub_agents: [taxonomist, trend_spotter, strategist]
+  strategist:
+    type: instance
+    models: [config.analyzer_model]
+    params:
+      name: strategist
+      description: Generates actionable study plans.
+      instruction: ['Based on the Trend Report, tell the student EXACTLY what to study. Create a Hit List, Safe Zone, and
+          Drop List.']
+      output_key: final_study_plan
+  taxonomist:
+    type: instance
+    models: [gemini-2.0-flash-exp]
+    params:
+      name: taxonomist
+      description: Classifies educational questions by topic and cognitive difficulty.
+      instruction: ['For every exam question provided, output tags for ''Topic'' and ''Blooms Level'' (Remember, Understand,
+          Apply, Analyze). Do NOT answer the question.']
+      output_key: tagged_questions
+      after_agent_callback: suppress_output_callback
+  trend_spotter:
+    type: instance
+    models: [gemini-2.0-pro-exp]
+    params:
+      name: trend_spotter
+      description: Analyzes statistical shifts in exam data over time.
+      instruction: [Analyze the tagged questions to find Frequency Shifts and Cognitive Shifts. Output a 'Shift Report'.]
+      output_key: trend_report
+      after_agent_callback: suppress_output_callback
+
+models:
+  config.analyzer_model:
+    type: literal
+    agents: [strategist]
+  gemini-2.0-flash-exp:
+    type: literal
+    agents: [taxonomist]
+  gemini-2.0-pro-exp:
+    type: literal
+    agents: [professor_profiler_agent, trend_spotter]
+
+tools:
+  analyze_statistics:
+    type: wrapper
+    agents: [professor_profiler_agent]
+    params:
+      wrapper: FunctionTool
+      wraps: analyze_statistics
+      description: |-
+        Analyze statistical patterns in exam questions.
+
+        Args:
+            questions_data: JSON string or dict containing tagged questions
+
+        Returns:
+            Statistical analysis including frequency distributions
+  compare_exams:
+    type: wrapper
+    agents: [professor_profiler_agent]
+    params:
+      wrapper: FunctionTool
+      wraps: compare_exams
+      description: |-
+        Compare multiple exam papers to identify trends over time.
+
+        Args:
+            exam_files: List of PDF file paths to compare
+
+        Returns:
+            Comparison analysis with trends
+  read_pdf_content:
+    type: wrapper
+    agents: [professor_profiler_agent]
+    params:
+      wrapper: FunctionTool
+      wraps: read_pdf_content
+      description: |-
+        Extract text content from a PDF file.
+
+        Args:
+            file_path: Path to the PDF file (relative to input/ folder or absolute path)
+
+        Returns:
+            Dictionary with filename and content, or error message
+  visualize_trends:
+    type: wrapper
+    agents: [professor_profiler_agent]
+    params:
+      wrapper: FunctionTool
+      wraps: visualize_trends
+      description: |-
+        Create visualizations for exam trends.
+
+        Args:
+            statistics: JSON string containing statistical data
+            output_path: Path to save the chart (saved to output/charts/ by default)
+            chart_type: Type of chart ('bar', 'pie', 'line')
+
+        Returns:
+            Dictionary with chart path and metadata
+
+teams:
+  professor_profiler_agent:
+    type: hierarchy
+    agents: [professor_profiler_agent, taxonomist, trend_spotter, strategist]
+
+imports:
+  Agent: google.adk.agents.Agent
+  analyze_statistics: tools.analyze_statistics
+  Any: typing.Any
+  asyncio: asyncio
+  auth: google.auth
+  Callable: typing.Callable
+  CallbackContext: google.adk.agents.callback_context.CallbackContext
+  compare_exams: tools.compare_exams
+  config: config.config
+  Content: google.genai.types.Content
+  Counter: collections.Counter
+  dataclass: dataclasses.dataclass
+  datetime: datetime
+  Dict: typing.Dict
+  FunctionTool: function_tool.FunctionTool
+  genai: google.genai
+  genai_types: google.genai.types
+  get_input_path: paths.get_input_path
+  get_output_path: paths.get_output_path
+  inspect: inspect
+  json: json
+  List: typing.List
+  list_input_files: paths.list_input_files
+  matplotlib: matplotlib
+  Optional: typing.Optional
+  os: os
+  Path: pathlib.Path
+  PdfReader: pypdf.PdfReader
+  pkgutil: pkgutil
+  plt: matplotlib.pyplot
+  read_pdf_content: tools.read_pdf_content
+  root_agent: profiler_agent.agent.root_agent
+  strategist: strategist.strategist
+  suppress_output_callback: agent_utils.suppress_output_callback
+  taxonomist: taxonomist.taxonomist
+  trend_spotter: trend_spotter.trend_spotter
+  visualize_trends: tools.visualize_trends
+
+functions:
+  __call__:
+    type: sync
+    module: google.adk.tools.function_tool
+    args: [self]
+    params:
+      returns: Any
+  __init__:
+    type: sync
+    module: google.adk.agents.callback_context
+    args: [self, agent, response, metadata]
+  __repr__:
+    type: sync
+    module: google.adk.tools.function_tool
+    args: [self]
+  _build_full_prompt:
+    type: sync
+    module: google.adk.agents.agent
+    args: [self, prompt]
+    params:
+      returns: str
+  _build_system_instruction:
+    type: sync
+    module: google.adk.agents.agent
+    args: [self]
+    params:
+      returns: str
+  _execute_llm:
+    type: async
+    module: google.adk.agents.agent
+    args: [self, prompt, system_instruction, tool_config]
+    params:
+      returns: str
+  _execute_sub_agents:
+    type: async
+    module: google.adk.agents.agent
+    args: [self, parent_response]
+    params:
+      returns: str
+  _execute_tool_call:
+    type: async
+    module: google.adk.agents.agent
+    args: [self, function_call]
+    params:
+      returns: str
+  _extract_parameters:
+    type: sync
+    module: google.adk.tools.function_tool
+    args: [self]
+    params:
+      returns: Dict
+  _prepare_tool_config:
+    type: sync
+    module: google.adk.agents.agent
+    args: [self]
+    params:
+      returns: Optional[Dict]
+  analyze_statistics:
+    type: sync
+    module: profiler_agent.tools
+    args: [questions_data]
+    params:
+      returns: dict
+  compare_exams:
+    type: sync
+    module: profiler_agent.tools
+    args: [exam_files]
+    params:
+      returns: dict
+  ensure_directories:
+    type: sync
+    module: profiler_agent.paths
+  execute:
+    type: async
+    module: google.adk.tools.function_tool
+    args: [self]
+    params:
+      returns: Any
+  get_input_path:
+    type: sync
+    module: profiler_agent.paths
+    args: [filename]
+    params:
+      returns: Path
+  get_output_path:
+    type: sync
+    module: profiler_agent.paths
+    args: [filename, subfolder]
+    params:
+      returns: Path
+  get_response_text:
+    type: sync
+    module: google.adk.agents.callback_context
+    args: [self]
+    params:
+      returns: str
+  initialize:
+    type: async
+    module: google.adk.agents.agent
+    args: [self, client]
+  list_available_exams:
+    type: sync
+    module: profiler_agent.tools
+    params:
+      returns: dict
+  list_input_files:
+    type: sync
+    module: profiler_agent.paths
+    args: [extension]
+    params:
+      returns: list
+  read_pdf_content:
+    type: sync
+    module: profiler_agent.tools
+    args: [file_path]
+    params:
+      returns: dict
+  run:
+    type: async
+    module: google.adk.agents.agent
+    args: [self, prompt, context]
+    params:
+      returns: Dict
+  suppress_output_callback:
+    type: sync
+    module: profiler_agent.agent_utils
+    args: [callback_context]
+    params:
+      returns: Content
+  to_content:
+    type: sync
+    module: google.adk.agents.callback_context
+    args: [self]
+    params:
+      returns: Content
+  to_gemini_declaration:
+    type: sync
+    module: google.adk.tools.function_tool
+    args: [self]
+    params:
+      returns: Dict
+  visualize_trends:
+    type: sync
+    module: profiler_agent.tools
+    args: [statistics, output_path, chart_type]
+    params:
+      returns: dict
+
+variables:
+  GOOGLE_CLOUD_PROJECT:
+    type: env
+    params:
+      caller: [os.environ.get]
+      path: [profiler_agent.config]
+
+files:
+  ./:
+    type: pattern
+    actions: [read]
+    params:
+      patterns: ['*{extension}']
+      caller: [list_input_files]
+  base_dir:
+    type: variable
+    actions: [write]
+    params:
+      caller: [base_dir.mkdir]
+  CHARTS_DIR:
+    type: variable
+    actions: [write]
+    params:
+      caller: [CHARTS_DIR.mkdir]
+  file_path:
+    type: variable
+    actions: [read]
+    params:
+      caller: [Path, os.path.exists, os.path.basename]
+  INPUT_DIR:
+    type: variable
+    actions: [write, read]
+    params:
+      caller: [INPUT_DIR.mkdir, INPUT_DIR.glob]
+  LOGS_DIR:
+    type: variable
+    actions: [write]
+    params:
+      caller: [LOGS_DIR.mkdir]
+  OUTPUT_DIR:
+    type: variable
+    actions: [write]
+    params:
+      caller: [OUTPUT_DIR.mkdir]
+  output_path:
+    type: variable
+    actions: [read]
+    params:
+      caller: [os.path.dirname]
+  path:
+    type: literal
+    actions: [read]
+    params:
+      caller: [Path(file_path)]
+  REPORTS_DIR:
+    type: variable
+    actions: [write]
+    params:
+      caller: [REPORTS_DIR.mkdir]
