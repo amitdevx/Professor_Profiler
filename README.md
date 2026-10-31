@@ -70,7 +70,7 @@ flowchart TD
 
 | Component | Technology | Description |
 | :--- | :--- | :--- |
-| **Core Logic** | Python 3.10+ | Type-hinted, async-native codebase. |
+| **Core Logic** | Python 3.11+ | Type-hinted, async-native codebase. |
 | **LLM Provider** | NVIDIA NIM | OpenAI-compatible endpoint hosting high-performance open models. |
 | **Fallback Engine** | Google Gemini | Rollback path when NIM fails or for comparison testing. |
 | **Document Processing** | `pypdf` | Robust text extraction from exam PDFs. |

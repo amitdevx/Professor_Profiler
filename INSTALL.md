@@ -7,7 +7,7 @@ Welcome to **Professor Profiler**! This guide will walk you through setting up t
 ## 1. Prerequisites
 
 Before starting, ensure you have the following installed on your system:
-- **Python 3.10+**
+- **Python 3.11+**
 - **Node.js 18+** (Required only for the interactive CLI)
 - **Git**
 
